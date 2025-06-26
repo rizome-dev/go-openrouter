@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 
 	"github.com/rizome-dev/openroutergo/pkg/models"
 	"github.com/rizome-dev/openroutergo/pkg/streaming"
