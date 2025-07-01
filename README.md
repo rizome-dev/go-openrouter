@@ -1,8 +1,16 @@
-# OpenRouterGo
+# go-openrouter
+
+
+[![GoDoc](https://pkg.go.dev/badge/github.com/rizome-dev/go-openrouter)](https://pkg.go.dev/github.com/rizome-dev/go-openrouter)
+[![Go Report Card](https://goreportcard.com/badge/github.com/rizome-dev/go-openrouter)](https://goreportcard.com/report/github.com/rizome-dev/go-openrouter)
 
 ```bash
 go get github.com/rizome-dev/go-openrouter
 ```
+
+built by: [rizome labs](https://rizome.dev)
+
+contact us: [hi (at) rizome.dev](mailto:hi@rizome.dev)
 
 ## Quick Start
 
