@@ -59,7 +59,7 @@ func NewTool(name, description string, parameters interface{}) (*Tool, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	return &Tool{
 		Type: "function",
 		Function: FunctionDescription{

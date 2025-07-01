@@ -4,28 +4,28 @@ package models
 type ProviderPreferences struct {
 	// List of provider slugs to try in order
 	Order []string `json:"order,omitempty"`
-	
+
 	// Whether to allow backup providers
 	AllowFallbacks *bool `json:"allow_fallbacks,omitempty"`
-	
+
 	// Only use providers that support all parameters
 	RequireParameters *bool `json:"require_parameters,omitempty"`
-	
+
 	// Data collection policy
 	DataCollection DataCollectionPolicy `json:"data_collection,omitempty"`
-	
+
 	// List of provider slugs to allow
 	Only []string `json:"only,omitempty"`
-	
+
 	// List of provider slugs to ignore
 	Ignore []string `json:"ignore,omitempty"`
-	
+
 	// List of quantization levels to filter by
 	Quantizations []QuantizationLevel `json:"quantizations,omitempty"`
-	
+
 	// Sort providers by this attribute
 	Sort SortStrategy `json:"sort,omitempty"`
-	
+
 	// Maximum price limits
 	MaxPrice *MaxPrice `json:"max_price,omitempty"`
 }
@@ -66,13 +66,13 @@ const (
 type MaxPrice struct {
 	// Maximum price per million prompt tokens
 	Prompt float64 `json:"prompt,omitempty"`
-	
+
 	// Maximum price per million completion tokens
 	Completion float64 `json:"completion,omitempty"`
-	
+
 	// Maximum price per image
 	Image float64 `json:"image,omitempty"`
-	
+
 	// Maximum price per request
 	Request float64 `json:"request,omitempty"`
 }

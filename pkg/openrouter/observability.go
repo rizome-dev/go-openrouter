@@ -34,22 +34,22 @@ type ResponseHook func(ctx context.Context, operation string, request interface{
 // ObservableClient wraps a client with observability features
 type ObservableClient struct {
 	*Client
-	logger           Logger
-	metrics          MetricsCollector
-	requestHooks     []RequestHook
-	responseHooks    []ResponseHook
-	logRequests      bool
-	logResponses     bool
-	trackCosts       bool
+	logger        Logger
+	metrics       MetricsCollector
+	requestHooks  []RequestHook
+	responseHooks []ResponseHook
+	logRequests   bool
+	logResponses  bool
+	trackCosts    bool
 }
 
 // ObservabilityOptions contains options for observability
 type ObservabilityOptions struct {
-	Logger        Logger
-	Metrics       MetricsCollector
-	LogRequests   bool
-	LogResponses  bool
-	TrackCosts    bool
+	Logger       Logger
+	Metrics      MetricsCollector
+	LogRequests  bool
+	LogResponses bool
+	TrackCosts   bool
 }
 
 // NewObservableClient creates a new observable client
@@ -78,12 +78,12 @@ func (o *ObservableClient) AddResponseHook(hook ResponseHook) {
 func (o *ObservableClient) CreateChatCompletion(ctx context.Context, req models.ChatCompletionRequest) (*models.ChatCompletionResponse, error) {
 	start := time.Now()
 	operation := "chat_completion"
-	
+
 	// Run request hooks
 	for _, hook := range o.requestHooks {
 		ctx = hook(ctx, operation, req)
 	}
-	
+
 	// Log request if enabled
 	if o.logRequests && o.logger != nil {
 		o.logger.Info("Creating chat completion",
@@ -92,10 +92,10 @@ func (o *ObservableClient) CreateChatCompletion(ctx context.Context, req models.
 			"stream", req.Stream,
 		)
 	}
-	
+
 	// Make request
 	resp, err := o.Client.CreateChatCompletion(ctx, req)
-	
+
 	// Calculate metrics
 	duration := time.Since(start)
 	labels := map[string]string{
@@ -103,7 +103,7 @@ func (o *ObservableClient) CreateChatCompletion(ctx context.Context, req models.
 		"operation": operation,
 		"status":    "success",
 	}
-	
+
 	if err != nil {
 		labels["status"] = "error"
 		if o.metrics != nil {
@@ -125,11 +125,11 @@ func (o *ObservableClient) CreateChatCompletion(ctx context.Context, req models.
 				"choices", len(resp.Choices),
 			)
 		}
-		
+
 		// Record metrics
 		if o.metrics != nil {
 			o.metrics.RecordLatency(operation, duration, labels)
-			
+
 			if resp.Usage != nil {
 				o.metrics.RecordTokens(
 					resp.Usage.PromptTokens,
@@ -138,18 +138,18 @@ func (o *ObservableClient) CreateChatCompletion(ctx context.Context, req models.
 				)
 			}
 		}
-		
+
 		// Track costs if enabled
 		if o.trackCosts && resp.ID != "" {
 			go o.trackGenerationCost(ctx, resp.ID, labels)
 		}
 	}
-	
+
 	// Run response hooks
 	for _, hook := range o.responseHooks {
 		hook(ctx, operation, req, resp, err)
 	}
-	
+
 	return resp, err
 }
 
@@ -157,7 +157,7 @@ func (o *ObservableClient) CreateChatCompletion(ctx context.Context, req models.
 func (o *ObservableClient) trackGenerationCost(ctx context.Context, generationID string, labels map[string]string) {
 	// Wait a bit for generation to be processed
 	time.Sleep(2 * time.Second)
-	
+
 	genResp, err := o.Client.GetGeneration(ctx, generationID)
 	if err != nil {
 		if o.logger != nil {
@@ -168,11 +168,11 @@ func (o *ObservableClient) trackGenerationCost(ctx context.Context, generationID
 		}
 		return
 	}
-	
+
 	if o.metrics != nil && genResp.Data.Usage.TotalCost > 0 {
 		o.metrics.RecordCost(genResp.Data.Usage.TotalCost, labels)
 	}
-	
+
 	if o.logger != nil {
 		o.logger.Debug("Generation cost tracked",
 			"generation_id", generationID,
@@ -267,13 +267,13 @@ func (m *SimpleMetricsCollector) RecordError(operation string, err error, labels
 // GetSummary returns a summary of collected metrics
 func (m *SimpleMetricsCollector) GetSummary() map[string]interface{} {
 	summary := map[string]interface{}{
-		"total_cost":         m.costs,
-		"total_tokens":       m.tokens["total"],
-		"prompt_tokens":      m.tokens["prompt"],
-		"completion_tokens":  m.tokens["completion"],
-		"errors":             m.errors,
+		"total_cost":        m.costs,
+		"total_tokens":      m.tokens["total"],
+		"prompt_tokens":     m.tokens["prompt"],
+		"completion_tokens": m.tokens["completion"],
+		"errors":            m.errors,
 	}
-	
+
 	// Calculate average latencies
 	avgLatencies := make(map[string]float64)
 	for key, durations := range m.latencies {
@@ -286,6 +286,6 @@ func (m *SimpleMetricsCollector) GetSummary() map[string]interface{} {
 		}
 	}
 	summary["avg_latency_ms"] = avgLatencies
-	
+
 	return summary
 }

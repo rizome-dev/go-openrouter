@@ -15,15 +15,15 @@ import (
 var (
 	// ErrStreamClosed is returned when trying to read from a closed stream
 	ErrStreamClosed = errors.New("stream is closed")
-	
+
 	// ErrInvalidSSE is returned when SSE data is malformed
 	ErrInvalidSSE = errors.New("invalid SSE format")
 )
 
 // SSEParser parses Server-Sent Events
 type SSEParser struct {
-	reader  *bufio.Reader
-	closed  bool
+	reader *bufio.Reader
+	closed bool
 }
 
 // NewSSEParser creates a new SSE parser
@@ -200,18 +200,18 @@ func (r *CompletionStreamReader) Close() error {
 
 // CompletionResponse represents a streaming completion response chunk
 type CompletionResponse struct {
-	ID      string                       `json:"id"`
-	Object  string                       `json:"object"`
-	Created int64                        `json:"created"`
-	Model   string                       `json:"model"`
-	Choices []CompletionStreamChoice     `json:"choices"`
-	Usage   *models.Usage                `json:"usage,omitempty"`
+	ID      string                   `json:"id"`
+	Object  string                   `json:"object"`
+	Created int64                    `json:"created"`
+	Model   string                   `json:"model"`
+	Choices []CompletionStreamChoice `json:"choices"`
+	Usage   *models.Usage            `json:"usage,omitempty"`
 }
 
 // CompletionStreamChoice represents a streaming choice
 type CompletionStreamChoice struct {
-	Index        int                  `json:"index"`
-	Text         string               `json:"text,omitempty"`
-	FinishReason string               `json:"finish_reason,omitempty"`
-	Error        *models.ChoiceError  `json:"error,omitempty"`
+	Index        int                 `json:"index"`
+	Text         string              `json:"text,omitempty"`
+	FinishReason string              `json:"finish_reason,omitempty"`
+	Error        *models.ChoiceError `json:"error,omitempty"`
 }

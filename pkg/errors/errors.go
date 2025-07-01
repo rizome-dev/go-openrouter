@@ -10,25 +10,25 @@ type ErrorCode int
 const (
 	// ErrorCodeBadRequest indicates invalid or missing params, CORS
 	ErrorCodeBadRequest ErrorCode = 400
-	
+
 	// ErrorCodeUnauthorized indicates invalid credentials
 	ErrorCodeUnauthorized ErrorCode = 401
-	
+
 	// ErrorCodeInsufficientCredits indicates insufficient credits
 	ErrorCodeInsufficientCredits ErrorCode = 402
-	
+
 	// ErrorCodeForbidden indicates moderation flag
 	ErrorCodeForbidden ErrorCode = 403
-	
+
 	// ErrorCodeTimeout indicates request timeout
 	ErrorCodeTimeout ErrorCode = 408
-	
+
 	// ErrorCodeRateLimited indicates rate limiting
 	ErrorCodeRateLimited ErrorCode = 429
-	
+
 	// ErrorCodeModelDown indicates model is down or invalid response
 	ErrorCodeModelDown ErrorCode = 502
-	
+
 	// ErrorCodeNoAvailableModel indicates no available model provider
 	ErrorCodeNoAvailableModel ErrorCode = 503
 )
@@ -73,9 +73,9 @@ func (e *APIError) GetModerationMetadata() (*ModerationErrorMetadata, bool) {
 	if !e.IsModerationError() || e.Metadata == nil {
 		return nil, false
 	}
-	
+
 	metadata := &ModerationErrorMetadata{}
-	
+
 	if reasons, ok := e.Metadata["reasons"].([]interface{}); ok {
 		for _, r := range reasons {
 			if str, ok := r.(string); ok {
@@ -83,19 +83,19 @@ func (e *APIError) GetModerationMetadata() (*ModerationErrorMetadata, bool) {
 			}
 		}
 	}
-	
+
 	if flagged, ok := e.Metadata["flagged_input"].(string); ok {
 		metadata.FlaggedInput = flagged
 	}
-	
+
 	if provider, ok := e.Metadata["provider_name"].(string); ok {
 		metadata.ProviderName = provider
 	}
-	
+
 	if model, ok := e.Metadata["model_slug"].(string); ok {
 		metadata.ModelSlug = model
 	}
-	
+
 	return metadata, true
 }
 
@@ -104,21 +104,21 @@ func (e *APIError) GetProviderMetadata() (*ProviderErrorMetadata, bool) {
 	if e.Metadata == nil {
 		return nil, false
 	}
-	
+
 	metadata := &ProviderErrorMetadata{}
-	
+
 	if provider, ok := e.Metadata["provider_name"].(string); ok {
 		metadata.ProviderName = provider
 	}
-	
+
 	if raw, ok := e.Metadata["raw"]; ok {
 		metadata.Raw = raw
 	}
-	
+
 	if metadata.ProviderName == "" {
 		return nil, false
 	}
-	
+
 	return metadata, true
 }
 

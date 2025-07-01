@@ -45,7 +45,7 @@ func imageAnalysisExample(client *openrouter.Client) {
 
 	// Example with image URL
 	fmt.Println("\n--- Analyzing image from URL ---")
-	
+
 	imageURL := "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg"
 	image := openrouter.ImageInput{
 		URL:    imageURL,
@@ -68,7 +68,7 @@ func imageAnalysisExample(client *openrouter.Client) {
 
 	// Example with multiple images
 	fmt.Println("\n--- Comparing multiple images ---")
-	
+
 	images := []openrouter.ImageInput{
 		{URL: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/320px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg"},
 		{URL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Polarlicht_2.jpg/320px-Polarlicht_2.jpg"},
@@ -97,7 +97,7 @@ func pdfProcessingExample(client *openrouter.Client) {
 	fmt.Println("To process a PDF file:")
 	fmt.Println("1. Load PDF from file: pdf := openrouter.LoadPDFFromFile('document.pdf', models.PDFEngineText)")
 	fmt.Println("2. Process with helper: resp := helper.CreateWithPDF(ctx, 'Summarize this document', pdf, 'google/gemini-2.0-flash-001')")
-	
+
 	// Example of processing with annotations for cost savings
 	fmt.Println("\n--- Reusing PDF Annotations ---")
 	fmt.Println("After first processing, save annotations from response:")
@@ -111,7 +111,7 @@ func webSearchExample(client *openrouter.Client) {
 
 	// Simple web search
 	fmt.Println("\n--- Simple Web Search ---")
-	
+
 	resp, err := helper.CreateWithWebSearch(ctx,
 		"What are the latest developments in quantum computing in 2024?",
 		"openai/gpt-4",
@@ -137,7 +137,7 @@ func webSearchExample(client *openrouter.Client) {
 
 	// Custom web search options
 	fmt.Println("\n--- Custom Web Search ---")
-	
+
 	resp, err = helper.CreateWithWebSearch(ctx,
 		"Recent AI breakthroughs",
 		"openai/gpt-4",
@@ -153,11 +153,11 @@ func webSearchExample(client *openrouter.Client) {
 	}
 
 	content, _ = resp.Choices[0].Message.GetTextContent()
-	fmt.Printf("Response: %s\n", content[:min(500, len(content))] + "...")
+	fmt.Printf("Response: %s\n", content[:min(500, len(content))]+"...")
 
 	// Native web search with context size
 	fmt.Println("\n--- Native Web Search ---")
-	
+
 	resp, err = helper.CreateWithNativeWebSearch(ctx,
 		"OpenAI GPT models comparison",
 		"openai/gpt-4o-search-preview",
@@ -170,7 +170,7 @@ func webSearchExample(client *openrouter.Client) {
 	}
 
 	content, _ = resp.Choices[0].Message.GetTextContent()
-	fmt.Printf("Response: %s\n", content[:min(500, len(content))] + "...")
+	fmt.Printf("Response: %s\n", content[:min(500, len(content))]+"...")
 }
 
 func researchAgentExample(client *openrouter.Client) {
@@ -180,7 +180,7 @@ func researchAgentExample(client *openrouter.Client) {
 
 	fmt.Println("\n--- Research Agent ---")
 	fmt.Println("Researching: The Future of Renewable Energy")
-	
+
 	research, err := agent.Research(ctx, "The Future of Renewable Energy", 3)
 	if err != nil {
 		log.Printf("Research error: %v", err)
@@ -189,15 +189,15 @@ func researchAgentExample(client *openrouter.Client) {
 
 	// Display research results
 	fmt.Printf("\n=== Research Topic: %s ===\n", research.Topic)
-	
+
 	if research.Summary != "" {
 		fmt.Printf("\nSummary:\n%s\n", research.Summary)
 	}
 
 	for _, section := range research.Sections {
 		fmt.Printf("\n--- %s ---\n", section.Title)
-		fmt.Printf("%s\n", section.Content[:min(300, len(section.Content))] + "...")
-		
+		fmt.Printf("%s\n", section.Content[:min(300, len(section.Content))]+"...")
+
 		if len(section.Citations) > 0 {
 			fmt.Println("\nReferences:")
 			for _, citation := range section.Citations {

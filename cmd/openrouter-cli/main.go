@@ -92,7 +92,7 @@ func listAvailableModels(ctx context.Context, client *openrouter.Client, categor
 
 func runSingle(ctx context.Context, client *openrouter.Client, prompt, model, system string, temp float64, maxTokens int, stream, webSearch bool) {
 	messages := []models.Message{}
-	
+
 	if system != "" {
 		messages = append(messages, models.NewTextMessage(models.RoleSystem, system))
 	}

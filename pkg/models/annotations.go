@@ -10,9 +10,9 @@ const (
 
 // Annotation represents an annotation in a message response
 type Annotation struct {
-	Type        AnnotationType     `json:"type"`
-	URLCitation *URLCitation       `json:"url_citation,omitempty"`
-	File        *FileAnnotation    `json:"file,omitempty"`
+	Type        AnnotationType  `json:"type"`
+	URLCitation *URLCitation    `json:"url_citation,omitempty"`
+	File        *FileAnnotation `json:"file,omitempty"`
 }
 
 // URLCitation represents a web search result citation

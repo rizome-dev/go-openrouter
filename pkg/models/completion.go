@@ -9,18 +9,18 @@ type ChatCompletionRequest struct {
 	// Either messages or prompt is required
 	Messages []Message `json:"messages,omitempty"`
 	Prompt   string    `json:"prompt,omitempty"`
-	
+
 	// Model selection
 	Model  string   `json:"model,omitempty"`
 	Models []string `json:"models,omitempty"`
-	
+
 	// Provider routing
 	Provider *ProviderPreferences `json:"provider,omitempty"`
-	
+
 	// Response configuration
 	ResponseFormat *ResponseFormat `json:"response_format,omitempty"`
 	Stream         bool            `json:"stream,omitempty"`
-	
+
 	// LLM Parameters
 	MaxTokens         *int               `json:"max_tokens,omitempty"`
 	Temperature       *float64           `json:"temperature,omitempty"`
@@ -35,22 +35,22 @@ type ChatCompletionRequest struct {
 	TopLogprobs       *int               `json:"top_logprobs,omitempty"`
 	MinP              *float64           `json:"min_p,omitempty"`
 	TopA              *float64           `json:"top_a,omitempty"`
-	
+
 	// Tool calling
 	Tools      []Tool     `json:"tools,omitempty"`
 	ToolChoice ToolChoice `json:"tool_choice,omitempty"`
-	
+
 	// Predicted outputs for latency optimization
 	Prediction *Prediction `json:"prediction,omitempty"`
-	
+
 	// OpenRouter-specific parameters
 	Transforms []string `json:"transforms,omitempty"`
 	Route      string   `json:"route,omitempty"`
 	User       string   `json:"user,omitempty"`
-	
+
 	// Plugins
 	Plugins []Plugin `json:"plugins,omitempty"`
-	
+
 	// Web search options (for native web search models)
 	WebSearchOptions *WebSearchOptions `json:"web_search_options,omitempty"`
 }
@@ -81,32 +81,32 @@ type WebSearchOptions struct {
 
 // ChatCompletionResponse represents a response from the chat completions endpoint
 type ChatCompletionResponse struct {
-	ID                string       `json:"id"`
-	Object            string       `json:"object"`
-	Created           int64        `json:"created"`
-	Model             string       `json:"model"`
-	Choices           []Choice     `json:"choices"`
-	Usage             *Usage       `json:"usage,omitempty"`
-	SystemFingerprint string       `json:"system_fingerprint,omitempty"`
+	ID                string   `json:"id"`
+	Object            string   `json:"object"`
+	Created           int64    `json:"created"`
+	Model             string   `json:"model"`
+	Choices           []Choice `json:"choices"`
+	Usage             *Usage   `json:"usage,omitempty"`
+	SystemFingerprint string   `json:"system_fingerprint,omitempty"`
 }
 
 // Choice represents a completion choice
 type Choice struct {
 	Index int `json:"index"`
-	
+
 	// For non-streaming responses
 	Message *Message `json:"message,omitempty"`
-	
+
 	// For streaming responses
 	Delta *Message `json:"delta,omitempty"`
-	
+
 	// Finish reasons
 	FinishReason       string `json:"finish_reason,omitempty"`
 	NativeFinishReason string `json:"native_finish_reason,omitempty"`
-	
+
 	// Error if any
 	Error *ChoiceError `json:"error,omitempty"`
-	
+
 	// Log probabilities
 	Logprobs *LogProbs `json:"logprobs,omitempty"`
 }

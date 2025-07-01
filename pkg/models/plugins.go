@@ -3,11 +3,11 @@ package models
 // Plugin represents a plugin configuration
 type Plugin struct {
 	ID string `json:"id"`
-	
+
 	// Web search plugin configuration
 	MaxResults   *int   `json:"max_results,omitempty"`
 	SearchPrompt string `json:"search_prompt,omitempty"`
-	
+
 	// PDF parser plugin configuration
 	PDF *PDFConfig `json:"pdf,omitempty"`
 }

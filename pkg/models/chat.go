@@ -69,7 +69,7 @@ type Message struct {
 	Name       string          `json:"name,omitempty"`
 	ToolCallID string          `json:"tool_call_id,omitempty"`
 	ToolCalls  []ToolCall      `json:"tool_calls,omitempty"`
-	
+
 	// For responses with web search or file annotations
 	Annotations []Annotation `json:"annotations,omitempty"`
 }
@@ -89,12 +89,12 @@ func NewMultiContentMessage(role Role, contents ...Content) (Message, error) {
 	for _, c := range contents {
 		contentParts = append(contentParts, c)
 	}
-	
+
 	content, err := json.Marshal(contentParts)
 	if err != nil {
 		return Message{}, err
 	}
-	
+
 	return Message{
 		Role:    role,
 		Content: content,
@@ -127,7 +127,7 @@ func (m Message) GetMultiContent() ([]Content, error) {
 	if err := json.Unmarshal(m.Content, &rawParts); err != nil {
 		return nil, err
 	}
-	
+
 	var contents []Content
 	for _, raw := range rawParts {
 		var typeCheck struct {
@@ -136,7 +136,7 @@ func (m Message) GetMultiContent() ([]Content, error) {
 		if err := json.Unmarshal(raw, &typeCheck); err != nil {
 			continue
 		}
-		
+
 		switch typeCheck.Type {
 		case ContentTypeText:
 			var tc TextContent
@@ -155,6 +155,6 @@ func (m Message) GetMultiContent() ([]Content, error) {
 			}
 		}
 	}
-	
+
 	return contents, nil
 }

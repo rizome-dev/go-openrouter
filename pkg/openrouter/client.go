@@ -15,7 +15,7 @@ import (
 const (
 	// DefaultBaseURL is the default base URL for the OpenRouter API
 	DefaultBaseURL = "https://openrouter.ai/api/v1"
-	
+
 	// DefaultTimeout is the default timeout for HTTP requests
 	DefaultTimeout = 2 * time.Minute
 )
@@ -25,11 +25,11 @@ type Client struct {
 	baseURL    string
 	apiKey     string
 	httpClient *http.Client
-	
+
 	// Optional headers
 	httpReferer string
 	xTitle      string
-	
+
 	// User agent for requests
 	userAgent string
 }
@@ -47,11 +47,11 @@ func NewClient(apiKey string, opts ...Option) *Client {
 			Timeout: DefaultTimeout,
 		},
 	}
-	
+
 	for _, opt := range opts {
 		opt(c)
 	}
-	
+
 	return c
 }
 
@@ -100,7 +100,7 @@ func WithUserAgent(userAgent string) Option {
 // doRequest performs an HTTP request with the given context
 func (c *Client) doRequest(ctx context.Context, method, endpoint string, body interface{}) (*http.Response, error) {
 	url := c.baseURL + endpoint
-	
+
 	var reqBody io.Reader
 	if body != nil {
 		jsonBody, err := json.Marshal(body)
@@ -109,17 +109,17 @@ func (c *Client) doRequest(ctx context.Context, method, endpoint string, body in
 		}
 		reqBody = bytes.NewBuffer(jsonBody)
 	}
-	
+
 	req, err := http.NewRequestWithContext(ctx, method, url, reqBody)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
-	
+
 	// Set headers
 	req.Header.Set("Authorization", "Bearer "+c.apiKey)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("User-Agent", c.userAgent)
-	
+
 	// Set optional headers
 	if c.httpReferer != "" {
 		req.Header.Set("HTTP-Referer", c.httpReferer)
@@ -127,18 +127,18 @@ func (c *Client) doRequest(ctx context.Context, method, endpoint string, body in
 	if c.xTitle != "" {
 		req.Header.Set("X-Title", c.xTitle)
 	}
-	
+
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to perform request: %w", err)
 	}
-	
+
 	// Check for errors
 	if resp.StatusCode >= 400 {
 		defer resp.Body.Close()
 		return nil, c.parseError(resp)
 	}
-	
+
 	return resp, nil
 }
 
@@ -148,11 +148,11 @@ func (c *Client) parseError(resp *http.Response) error {
 	if err != nil {
 		return fmt.Errorf("failed to read error response: %w", err)
 	}
-	
+
 	var errResp errors.ErrorResponse
 	if err := json.Unmarshal(body, &errResp); err != nil {
 		return fmt.Errorf("failed to parse error response: %w", err)
 	}
-	
+
 	return errResp.ToError()
 }

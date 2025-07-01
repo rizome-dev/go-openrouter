@@ -178,13 +178,13 @@ func agentExample(client *openrouter.Client) {
 		// Simulate web search
 		results := []map[string]string{
 			{
-				"title": "Example Result 1",
-				"url":   "https://example.com/1",
+				"title":   "Example Result 1",
+				"url":     "https://example.com/1",
 				"snippet": "This is an example search result about " + args.Query,
 			},
 			{
-				"title": "Example Result 2",
-				"url":   "https://example.com/2",
+				"title":   "Example Result 2",
+				"url":     "https://example.com/2",
 				"snippet": "Another result related to " + args.Query,
 			},
 		}
@@ -199,8 +199,8 @@ func agentExample(client *openrouter.Client) {
 	}
 
 	finalMessages, err := agent.Run(context.Background(), messages, openrouter.RunOptions{
-		Tools:      []models.Tool{*weatherTool, *searchTool},
-		ToolChoice: models.ToolChoiceAuto,
+		Tools:         []models.Tool{*weatherTool, *searchTool},
+		ToolChoice:    models.ToolChoiceAuto,
 		MaxIterations: 5,
 	})
 
@@ -234,7 +234,7 @@ func structuredOutputExample(client *openrouter.Client) {
 
 	// Example 1: Using predefined struct
 	fmt.Println("\n--- Weather Info Example ---")
-	
+
 	weatherResp, err := structured.CreateWithSchema(ctx,
 		models.ChatCompletionRequest{
 			Model: "openai/gpt-4",
@@ -263,7 +263,7 @@ func structuredOutputExample(client *openrouter.Client) {
 
 	// Example 2: Using custom schema
 	fmt.Println("\n--- Custom Schema Example ---")
-	
+
 	customSchema := map[string]interface{}{
 		"type": "object",
 		"properties": map[string]interface{}{
@@ -317,7 +317,7 @@ func structuredOutputExample(client *openrouter.Client) {
 func evaluateExpression(expr string) string {
 	// Simple evaluation for demo purposes
 	expr = strings.TrimSpace(expr)
-	
+
 	// Handle sqrt
 	if strings.HasPrefix(expr, "sqrt(") && strings.HasSuffix(expr, ")") {
 		numStr := expr[5 : len(expr)-1]
@@ -325,7 +325,7 @@ func evaluateExpression(expr string) string {
 		fmt.Sscanf(numStr, "%f", &num)
 		return fmt.Sprintf("%.2f", math.Sqrt(num))
 	}
-	
+
 	// Handle simple addition
 	if strings.Contains(expr, "+") {
 		parts := strings.Split(expr, "+")
@@ -336,11 +336,11 @@ func evaluateExpression(expr string) string {
 			return fmt.Sprintf("%.2f", a+b)
 		}
 	}
-	
+
 	// For complex expressions, return a result
 	if expr == "sqrt(144) + 13" {
 		return "25"
 	}
-	
+
 	return "Error: Cannot evaluate expression"
 }

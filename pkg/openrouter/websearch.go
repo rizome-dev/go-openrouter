@@ -149,13 +149,13 @@ func (r *ResearchAgent) Research(ctx context.Context, topic string, depth int) (
 	if len(searchResp.Choices) > 0 && searchResp.Choices[0].Message != nil {
 		content, _ := searchResp.Choices[0].Message.GetTextContent()
 		citations := ExtractCitations(searchResp)
-		
+
 		result.Sections = append(result.Sections, ResearchSection{
 			Title:     "Overview",
 			Content:   content,
 			Citations: citations,
 		})
-		
+
 		result.Citations = append(result.Citations, citations...)
 	}
 
@@ -182,13 +182,13 @@ func (r *ResearchAgent) Research(ctx context.Context, topic string, depth int) (
 		if len(subResp.Choices) > 0 && subResp.Choices[0].Message != nil {
 			content, _ := subResp.Choices[0].Message.GetTextContent()
 			citations := ExtractCitations(subResp)
-			
+
 			result.Sections = append(result.Sections, ResearchSection{
 				Title:     subtopic,
 				Content:   content,
 				Citations: citations,
 			})
-			
+
 			result.Citations = append(result.Citations, citations...)
 		}
 	}
@@ -215,17 +215,17 @@ func (r *ResearchAgent) extractSubtopics(resp *models.ChatCompletionResponse, ma
 	}
 
 	content, _ := resp.Choices[0].Message.GetTextContent()
-	
+
 	// Simple extraction based on common patterns
 	var subtopics []string
 	lines := strings.Split(content, "\n")
-	
+
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
 		// Look for numbered lists or bullet points
-		if strings.HasPrefix(line, "1.") || strings.HasPrefix(line, "2.") || 
-		   strings.HasPrefix(line, "3.") || strings.HasPrefix(line, "•") || 
-		   strings.HasPrefix(line, "-") || strings.HasPrefix(line, "*") {
+		if strings.HasPrefix(line, "1.") || strings.HasPrefix(line, "2.") ||
+			strings.HasPrefix(line, "3.") || strings.HasPrefix(line, "•") ||
+			strings.HasPrefix(line, "-") || strings.HasPrefix(line, "*") {
 			// Extract the topic
 			topic := strings.TrimSpace(strings.TrimPrefix(line, "1."))
 			topic = strings.TrimSpace(strings.TrimPrefix(topic, "2."))
@@ -233,7 +233,7 @@ func (r *ResearchAgent) extractSubtopics(resp *models.ChatCompletionResponse, ma
 			topic = strings.TrimSpace(strings.TrimPrefix(topic, "•"))
 			topic = strings.TrimSpace(strings.TrimPrefix(topic, "-"))
 			topic = strings.TrimSpace(strings.TrimPrefix(topic, "*"))
-			
+
 			if topic != "" && len(subtopics) < maxCount {
 				subtopics = append(subtopics, topic)
 			}
@@ -263,14 +263,14 @@ func extractDomain(url string) string {
 	// Remove protocol
 	domain := strings.TrimPrefix(url, "https://")
 	domain = strings.TrimPrefix(domain, "http://")
-	
+
 	// Get domain part
 	if idx := strings.Index(domain, "/"); idx > 0 {
 		domain = domain[:idx]
 	}
-	
+
 	// Remove www
 	domain = strings.TrimPrefix(domain, "www.")
-	
+
 	return domain
 }

@@ -14,11 +14,11 @@ import (
 
 // RetryConfig represents retry configuration
 type RetryConfig struct {
-	MaxRetries     int
-	InitialDelay   time.Duration
-	MaxDelay       time.Duration
-	BackoffFactor  float64
-	JitterFactor   float64
+	MaxRetries      int
+	InitialDelay    time.Duration
+	MaxDelay        time.Duration
+	BackoffFactor   float64
+	JitterFactor    float64
 	RetryableErrors map[errors.ErrorCode]bool
 }
 
@@ -31,9 +31,9 @@ func DefaultRetryConfig() *RetryConfig {
 		BackoffFactor: 2.0,
 		JitterFactor:  0.1,
 		RetryableErrors: map[errors.ErrorCode]bool{
-			errors.ErrorCodeTimeout:        true,
-			errors.ErrorCodeRateLimited:    true,
-			errors.ErrorCodeModelDown:      true,
+			errors.ErrorCodeTimeout:          true,
+			errors.ErrorCodeRateLimited:      true,
+			errors.ErrorCodeModelDown:        true,
 			errors.ErrorCodeNoAvailableModel: true,
 		},
 	}
@@ -50,7 +50,7 @@ func NewRetryClient(apiKey string, retryConfig *RetryConfig, opts ...Option) *Re
 	if retryConfig == nil {
 		retryConfig = DefaultRetryConfig()
 	}
-	
+
 	return &RetryClient{
 		Client: NewClient(apiKey, opts...),
 		config: retryConfig,
@@ -60,7 +60,7 @@ func NewRetryClient(apiKey string, retryConfig *RetryConfig, opts ...Option) *Re
 // CreateChatCompletion creates a chat completion with retry logic
 func (r *RetryClient) CreateChatCompletion(ctx context.Context, req models.ChatCompletionRequest) (*models.ChatCompletionResponse, error) {
 	var lastErr error
-	
+
 	for attempt := 0; attempt <= r.config.MaxRetries; attempt++ {
 		// Calculate delay for this attempt
 		if attempt > 0 {
@@ -71,33 +71,33 @@ func (r *RetryClient) CreateChatCompletion(ctx context.Context, req models.ChatC
 			case <-time.After(delay):
 			}
 		}
-		
+
 		// Make request
 		resp, err := r.Client.CreateChatCompletion(ctx, req)
 		if err == nil {
 			return resp, nil
 		}
-		
+
 		lastErr = err
-		
+
 		// Check if error is retryable
 		if !r.isRetryable(err) {
 			return nil, err
 		}
-		
+
 		// Log retry attempt
 		if attempt < r.config.MaxRetries {
 			fmt.Printf("Retry attempt %d/%d after error: %v\n", attempt+1, r.config.MaxRetries, err)
 		}
 	}
-	
+
 	return nil, fmt.Errorf("max retries exceeded: %w", lastErr)
 }
 
 // CreateChatCompletionStream creates a streaming chat completion with retry logic
 func (r *RetryClient) CreateChatCompletionStream(ctx context.Context, req models.ChatCompletionRequest) (*streaming.ChatCompletionStreamReader, error) {
 	var lastErr error
-	
+
 	for attempt := 0; attempt <= r.config.MaxRetries; attempt++ {
 		// Calculate delay for this attempt
 		if attempt > 0 {
@@ -108,21 +108,21 @@ func (r *RetryClient) CreateChatCompletionStream(ctx context.Context, req models
 			case <-time.After(delay):
 			}
 		}
-		
+
 		// Make request
 		stream, err := r.Client.CreateChatCompletionStream(ctx, req)
 		if err == nil {
 			return stream, nil
 		}
-		
+
 		lastErr = err
-		
+
 		// Check if error is retryable
 		if !r.isRetryable(err) {
 			return nil, err
 		}
 	}
-	
+
 	return nil, fmt.Errorf("max retries exceeded: %w", lastErr)
 }
 
@@ -130,16 +130,16 @@ func (r *RetryClient) CreateChatCompletionStream(ctx context.Context, req models
 func (r *RetryClient) calculateDelay(attempt int) time.Duration {
 	// Exponential backoff
 	delay := float64(r.config.InitialDelay) * math.Pow(r.config.BackoffFactor, float64(attempt-1))
-	
+
 	// Apply max delay
 	if delay > float64(r.config.MaxDelay) {
 		delay = float64(r.config.MaxDelay)
 	}
-	
+
 	// Apply jitter
 	jitter := delay * r.config.JitterFactor * (2*rand.Float64() - 1)
 	delay += jitter
-	
+
 	return time.Duration(delay)
 }
 
@@ -149,16 +149,16 @@ func (r *RetryClient) isRetryable(err error) bool {
 	if !ok {
 		return false
 	}
-	
+
 	return r.config.RetryableErrors[apiErr.Code]
 }
 
 // CircuitBreaker implements circuit breaker pattern
 type CircuitBreaker struct {
-	client          *Client
+	client           *Client
 	failureThreshold int
-	resetTimeout    time.Duration
-	
+	resetTimeout     time.Duration
+
 	failures    int
 	lastFailure time.Time
 	state       CircuitState
@@ -189,13 +189,13 @@ func (cb *CircuitBreaker) CreateChatCompletion(ctx context.Context, req models.C
 	if err := cb.checkState(); err != nil {
 		return nil, err
 	}
-	
+
 	// Make request
 	resp, err := cb.client.CreateChatCompletion(ctx, req)
-	
+
 	// Update circuit state based on result
 	cb.recordResult(err)
-	
+
 	return resp, err
 }
 
@@ -226,7 +226,7 @@ func (cb *CircuitBreaker) recordResult(err error) {
 		// Failure
 		cb.failures++
 		cb.lastFailure = time.Now()
-		
+
 		if cb.failures >= cb.failureThreshold {
 			cb.state = CircuitOpen
 		}

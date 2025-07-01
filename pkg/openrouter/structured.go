@@ -25,39 +25,39 @@ func GenerateSchema(v interface{}) (map[string]interface{}, error) {
 	if t.Kind() == reflect.Ptr {
 		t = t.Elem()
 	}
-	
+
 	if t.Kind() != reflect.Struct {
 		return nil, fmt.Errorf("input must be a struct or pointer to struct")
 	}
-	
+
 	return generateSchemaFromType(t), nil
 }
 
 func generateSchemaFromType(t reflect.Type) map[string]interface{} {
 	schema := map[string]interface{}{
-		"type": "object",
-		"properties": make(map[string]interface{}),
-		"required": []string{},
+		"type":                 "object",
+		"properties":           make(map[string]interface{}),
+		"required":             []string{},
 		"additionalProperties": false,
 	}
-	
+
 	properties := schema["properties"].(map[string]interface{})
 	required := []string{}
-	
+
 	for i := 0; i < t.NumField(); i++ {
 		field := t.Field(i)
-		
+
 		// Skip unexported fields
 		if field.PkgPath != "" {
 			continue
 		}
-		
+
 		// Get JSON tag
 		jsonTag := field.Tag.Get("json")
 		if jsonTag == "-" {
 			continue
 		}
-		
+
 		fieldName := field.Name
 		if jsonTag != "" {
 			fieldName = jsonTag
@@ -70,23 +70,23 @@ func generateSchemaFromType(t reflect.Type) map[string]interface{} {
 		} else {
 			required = append(required, fieldName)
 		}
-		
+
 		// Get description from tag
 		description := field.Tag.Get("description")
-		
+
 		// Generate schema for field
 		fieldSchema := generateFieldSchema(field.Type)
 		if description != "" {
 			fieldSchema["description"] = description
 		}
-		
+
 		properties[fieldName] = fieldSchema
 	}
-	
+
 	if len(required) > 0 {
 		schema["required"] = required
 	}
-	
+
 	return schema
 }
 
@@ -103,7 +103,7 @@ func generateFieldSchema(t reflect.Type) map[string]interface{} {
 		return map[string]interface{}{"type": "boolean"}
 	case reflect.Slice, reflect.Array:
 		return map[string]interface{}{
-			"type": "array",
+			"type":  "array",
 			"items": generateFieldSchema(t.Elem()),
 		}
 	case reflect.Struct:
@@ -120,7 +120,7 @@ func generateFieldSchema(t reflect.Type) map[string]interface{} {
 func (s *StructuredOutput) CreateWithSchema(ctx context.Context, req models.ChatCompletionRequest, schemaName string, schema interface{}) (*models.ChatCompletionResponse, error) {
 	// Generate schema if it's a struct
 	var jsonSchema map[string]interface{}
-	
+
 	switch v := schema.(type) {
 	case map[string]interface{}:
 		jsonSchema = v
@@ -131,13 +131,13 @@ func (s *StructuredOutput) CreateWithSchema(ctx context.Context, req models.Chat
 			return nil, fmt.Errorf("failed to generate schema: %w", err)
 		}
 	}
-	
+
 	// Marshal schema
 	schemaBytes, err := json.Marshal(jsonSchema)
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal schema: %w", err)
 	}
-	
+
 	// Set response format
 	req.ResponseFormat = &models.ResponseFormat{
 		Type: "json_schema",
@@ -147,7 +147,7 @@ func (s *StructuredOutput) CreateWithSchema(ctx context.Context, req models.Chat
 			Schema: schemaBytes,
 		},
 	}
-	
+
 	return s.client.CreateChatCompletion(ctx, req)
 }
 
@@ -156,16 +156,16 @@ func ParseStructuredResponse(resp *models.ChatCompletionResponse, target interfa
 	if len(resp.Choices) == 0 || resp.Choices[0].Message == nil {
 		return fmt.Errorf("no message in response")
 	}
-	
+
 	content, err := resp.Choices[0].Message.GetTextContent()
 	if err != nil {
 		return fmt.Errorf("failed to get text content: %w", err)
 	}
-	
+
 	if err := json.Unmarshal([]byte(content), target); err != nil {
 		return fmt.Errorf("failed to unmarshal response: %w", err)
 	}
-	
+
 	return nil
 }
 

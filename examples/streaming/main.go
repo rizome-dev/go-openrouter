@@ -95,7 +95,7 @@ func streamingWithCancellation(client *openrouter.Client) {
 	defer stream.Close()
 
 	fmt.Print("Response (will be cancelled after 5 seconds): ")
-	
+
 	// Read stream until cancelled
 	for {
 		chunk, err := stream.Read()

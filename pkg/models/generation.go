@@ -7,18 +7,18 @@ type GenerationResponse struct {
 
 // Generation represents metadata about a specific generation
 type Generation struct {
-	ID               string                 `json:"id"`
-	Model            string                 `json:"model"`
-	Object           string                 `json:"object"`
-	Created          int64                  `json:"created"`
-	Usage            GenerationUsage        `json:"usage"`
-	NativeTokenCounts NativeTokenCounts     `json:"native_token_counts"`
-	Metrics          GenerationMetrics      `json:"metrics"`
-	Provider         string                 `json:"provider"`
-	Error            *GenerationError       `json:"error,omitempty"`
-	Moderation       *ModerationInfo        `json:"moderation,omitempty"`
-	Transforms       []string               `json:"transforms,omitempty"`
-	Origin           map[string]interface{} `json:"origin,omitempty"`
+	ID                string                 `json:"id"`
+	Model             string                 `json:"model"`
+	Object            string                 `json:"object"`
+	Created           int64                  `json:"created"`
+	Usage             GenerationUsage        `json:"usage"`
+	NativeTokenCounts NativeTokenCounts      `json:"native_token_counts"`
+	Metrics           GenerationMetrics      `json:"metrics"`
+	Provider          string                 `json:"provider"`
+	Error             *GenerationError       `json:"error,omitempty"`
+	Moderation        *ModerationInfo        `json:"moderation,omitempty"`
+	Transforms        []string               `json:"transforms,omitempty"`
+	Origin            map[string]interface{} `json:"origin,omitempty"`
 }
 
 // GenerationUsage represents token usage with costs
@@ -38,10 +38,10 @@ type NativeTokenCounts struct {
 
 // GenerationMetrics represents performance metrics
 type GenerationMetrics struct {
-	LatencyMS       int     `json:"latency_ms"`
-	TokensPerSecond float64 `json:"tokens_per_second"`
-	TimeToFirstToken int    `json:"time_to_first_token_ms,omitempty"`
-	StreamingLatency int    `json:"streaming_latency_ms,omitempty"`
+	LatencyMS        int     `json:"latency_ms"`
+	TokensPerSecond  float64 `json:"tokens_per_second"`
+	TimeToFirstToken int     `json:"time_to_first_token_ms,omitempty"`
+	StreamingLatency int     `json:"streaming_latency_ms,omitempty"`
 }
 
 // GenerationError represents an error that occurred during generation

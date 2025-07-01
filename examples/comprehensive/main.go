@@ -71,7 +71,7 @@ func observableExample(apiKey string) {
 
 	// Make some requests
 	ctx := context.Background()
-	
+
 	for i := 0; i < 3; i++ {
 		resp, err := client.CreateChatCompletion(ctx, models.ChatCompletionRequest{
 			Model: "openai/gpt-3.5-turbo",
@@ -134,7 +134,7 @@ func retryExample(apiKey string) {
 	}
 
 	content, _ := resp.Choices[0].Message.GetTextContent()
-	fmt.Printf("Response: %s\n", content[:min(200, len(content))] + "...")
+	fmt.Printf("Response: %s\n", content[:min(200, len(content))]+"...")
 }
 
 func advancedRoutingExample(apiKey string) {
@@ -196,7 +196,7 @@ func advancedRoutingExample(apiKey string) {
 		log.Printf("Error: %v", err)
 	} else {
 		content, _ := resp.Choices[0].Message.GetTextContent()
-		fmt.Printf("Response: %s\n", content[:min(200, len(content))] + "...")
+		fmt.Printf("Response: %s\n", content[:min(200, len(content))]+"...")
 	}
 }
 
@@ -226,7 +226,7 @@ func completeWorkflowExample(apiKey string) {
 	// Step 1: Research with web search
 	fmt.Println("\n--- Step 1: Research ---")
 	webHelper := openrouter.NewWebSearchHelper(retryClient.Client)
-	
+
 	researchResp, err := webHelper.CreateWithWebSearch(ctx,
 		"Latest advances in quantum computing 2024",
 		"openai/gpt-4",
@@ -241,7 +241,7 @@ func completeWorkflowExample(apiKey string) {
 	}
 
 	researchContent, _ := researchResp.Choices[0].Message.GetTextContent()
-	fmt.Printf("Research findings: %s\n", researchContent[:min(300, len(researchContent))] + "...")
+	fmt.Printf("Research findings: %s\n", researchContent[:min(300, len(researchContent))]+"...")
 
 	// Extract citations
 	citations := openrouter.ExtractCitations(researchResp)
@@ -266,7 +266,7 @@ func completeWorkflowExample(apiKey string) {
 		models.ChatCompletionRequest{
 			Model: "openai/gpt-4",
 			Messages: []models.Message{
-				models.NewTextMessage(models.RoleUser, 
+				models.NewTextMessage(models.RoleUser,
 					fmt.Sprintf("Based on this research about quantum computing, create a structured summary:\n\n%s", researchContent)),
 			},
 		},
@@ -295,8 +295,8 @@ func completeWorkflowExample(apiKey string) {
 		Model: "openai/gpt-4",
 		Messages: []models.Message{
 			models.NewTextMessage(models.RoleSystem, "You are an expert at creating prompts for image generation."),
-			models.NewTextMessage(models.RoleUser, 
-				fmt.Sprintf("Create a detailed prompt for an image that visualizes this quantum computing breakthrough: %s", 
+			models.NewTextMessage(models.RoleUser,
+				fmt.Sprintf("Create a detailed prompt for an image that visualizes this quantum computing breakthrough: %s",
 					summary.Breakthroughs[0].Title)),
 		},
 		MaxTokens: intPtr(150),

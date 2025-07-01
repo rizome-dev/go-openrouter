@@ -15,13 +15,13 @@ type CompletionRequest struct {
 	Model  string   `json:"model,omitempty"`
 	Prompt string   `json:"prompt"`
 	Models []string `json:"models,omitempty"`
-	
+
 	// Provider routing
 	Provider *models.ProviderPreferences `json:"provider,omitempty"`
-	
+
 	// Response configuration
 	Stream bool `json:"stream,omitempty"`
-	
+
 	// LLM Parameters
 	MaxTokens         *int               `json:"max_tokens,omitempty"`
 	Temperature       *float64           `json:"temperature,omitempty"`
@@ -36,7 +36,7 @@ type CompletionRequest struct {
 	TopLogprobs       *int               `json:"top_logprobs,omitempty"`
 	MinP              *float64           `json:"min_p,omitempty"`
 	TopA              *float64           `json:"top_a,omitempty"`
-	
+
 	// OpenRouter-specific parameters
 	Transforms []string `json:"transforms,omitempty"`
 	User       string   `json:"user,omitempty"`
@@ -54,28 +54,28 @@ type CompletionResponse struct {
 
 // CompletionChoice represents a completion choice
 type CompletionChoice struct {
-	Index        int                  `json:"index"`
-	Text         string               `json:"text,omitempty"`
-	FinishReason string               `json:"finish_reason,omitempty"`
-	Error        *models.ChoiceError  `json:"error,omitempty"`
+	Index        int                 `json:"index"`
+	Text         string              `json:"text,omitempty"`
+	FinishReason string              `json:"finish_reason,omitempty"`
+	Error        *models.ChoiceError `json:"error,omitempty"`
 }
 
 // CreateCompletion creates a text completion
 func (c *Client) CreateCompletion(ctx context.Context, req CompletionRequest) (*CompletionResponse, error) {
 	// Ensure streaming is disabled for non-streaming endpoint
 	req.Stream = false
-	
+
 	resp, err := c.doRequest(ctx, "POST", "/completions", req)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
-	
+
 	var completionResp CompletionResponse
 	if err := json.NewDecoder(resp.Body).Decode(&completionResp); err != nil {
 		return nil, fmt.Errorf("failed to decode response: %w", err)
 	}
-	
+
 	return &completionResp, nil
 }
 
@@ -83,11 +83,11 @@ func (c *Client) CreateCompletion(ctx context.Context, req CompletionRequest) (*
 func (c *Client) CreateCompletionStream(ctx context.Context, req CompletionRequest) (*streaming.CompletionStreamReader, error) {
 	// Ensure streaming is enabled
 	req.Stream = true
-	
+
 	resp, err := c.doRequest(ctx, "POST", "/completions", req)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	return streaming.NewCompletionStreamReader(resp.Body), nil
 }

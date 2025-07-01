@@ -204,10 +204,10 @@ func (m *MultiModalHelper) prepareImageContent(image ImageInput) (models.Content
 		if err != nil {
 			return nil, fmt.Errorf("failed to read image file: %w", err)
 		}
-		
+
 		// Determine content type
 		contentType := m.getImageContentType(image.Path)
-		
+
 		// Create data URL
 		url = fmt.Sprintf("data:%s;base64,%s", contentType, base64.StdEncoding.EncodeToString(data))
 	} else if image.Data != nil {

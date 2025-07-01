@@ -42,7 +42,7 @@ func TestCreateChatCompletion(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Verify request
 		assert.Equal(t, "POST", r.Method)
-		assert.Equal(t, "/api/v1/chat/completions", r.URL.Path)
+		assert.Equal(t, "/chat/completions", r.URL.Path)
 		assert.Equal(t, "Bearer test-api-key", r.Header.Get("Authorization"))
 		assert.Equal(t, "application/json", r.Header.Get("Content-Type"))
 
@@ -97,7 +97,7 @@ func TestCreateChatCompletion(t *testing.T) {
 	assert.NotNil(t, resp)
 	assert.Equal(t, "chatcmpl-123", resp.ID)
 	assert.Equal(t, 1, len(resp.Choices))
-	
+
 	content, err := resp.Choices[0].Message.GetTextContent()
 	assert.NoError(t, err)
 	assert.Equal(t, "42", content)
@@ -180,7 +180,7 @@ func TestErrorHandling(t *testing.T) {
 			})
 
 			require.Error(t, err)
-			
+
 			apiErr, ok := err.(*errors.APIError)
 			require.True(t, ok)
 			assert.Equal(t, tt.expectedCode, apiErr.Code)
@@ -192,7 +192,7 @@ func TestErrorHandling(t *testing.T) {
 func TestListModels(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "GET", r.Method)
-		assert.Equal(t, "/api/v1/models", r.URL.Path)
+		assert.Equal(t, "/models", r.URL.Path)
 
 		resp := models.ModelsResponse{
 			Data: []models.Model{
@@ -237,7 +237,7 @@ func TestListModels(t *testing.T) {
 func TestGetGeneration(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "GET", r.Method)
-		assert.Equal(t, "/api/v1/generation", r.URL.Path)
+		assert.Equal(t, "/generation", r.URL.Path)
 		assert.Equal(t, "gen-123", r.URL.Query().Get("id"))
 
 		resp := models.GenerationResponse{
