@@ -1,0 +1,33 @@
+name: Go
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+
+    - name: Build
+      run: go build -v ./...
+
+    - name: Test
+      run: go test -v ./...
+
+    - name: Run E2E tests
+      run: |
+        cd tests
+        chmod +x run_e2e.sh
+        ./run_e2e.sh
+      env:
+        OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}

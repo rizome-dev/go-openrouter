@@ -343,6 +343,60 @@ See the `/examples` directory for complete examples:
 - Advanced routing
 - Structured outputs
 
+## Testing
+
+### Running Tests
+
+```bash
+# Run all tests
+go test ./...
+
+# Run tests with verbose output
+go test -v ./...
+
+# Run specific test package
+go test ./pkg/openrouter/...
+
+# Run E2E tests (requires OPENROUTER_API_KEY)
+cd tests
+chmod +x run_e2e.sh
+./run_e2e.sh
+```
+
+### Test Suite
+
+The project includes comprehensive test coverage:
+
+**Unit Tests** (`pkg/openrouter/`):
+- `client_test.go` - Core client functionality
+- `structured_test.go` - Structured output handling
+- `tools_test.go` - Tool calling functionality
+- `api_management_test.go` - API key management
+- `errors_test.go` - Error handling
+- `message_test.go` - Message construction
+- `plugins_test.go` - Plugin system
+- `multimodal_test.go` - Multi-modal content
+- `routing_test.go` - Provider routing
+- `streaming_test.go` - Streaming responses
+- `response_format_test.go` - Response formatting
+- `websearch_test.go` - Web search plugin
+- `retry_test.go` - Retry logic
+
+**End-to-End Tests** (`tests/e2e/`):
+- `e2e_test.go` - Basic API functionality
+- `advanced_test.go` - Advanced features
+- `multimodal_test.go` - Multi-modal inputs
+- `streaming_test.go` - Streaming responses
+- `structured_test.go` - Structured outputs
+- `tools_test.go` - Tool calling
+
+### CI/CD
+
+Tests are automatically run on GitHub Actions for all pull requests and pushes to main. The workflow includes:
+- Building the project
+- Running all unit tests
+- Running E2E tests (when API key is available)
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
