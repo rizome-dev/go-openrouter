@@ -133,6 +133,14 @@ func (r *ChatCompletionStreamReader) Read() (*models.ChatCompletionResponse, err
 		return nil, io.EOF
 	}
 
+	// Check for top-level error first
+	var errorCheck struct {
+		Error *models.ChoiceError `json:"error,omitempty"`
+	}
+	if err := json.Unmarshal([]byte(event.Data), &errorCheck); err == nil && errorCheck.Error != nil {
+		return nil, fmt.Errorf("openrouter error %d: %s", errorCheck.Error.Code, errorCheck.Error.Message)
+	}
+
 	// Parse JSON response
 	var response models.ChatCompletionResponse
 	if err := json.Unmarshal([]byte(event.Data), &response); err != nil {

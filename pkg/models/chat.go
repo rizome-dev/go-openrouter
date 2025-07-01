@@ -2,6 +2,7 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // Role represents the role of a message in a conversation
@@ -114,11 +115,54 @@ func NewToolMessage(toolCallID, name, content string) Message {
 
 // GetTextContent attempts to get the text content from a message
 func (m Message) GetTextContent() (string, error) {
+	// First try to unmarshal as string
 	var text string
-	if err := json.Unmarshal(m.Content, &text); err != nil {
+	if err := json.Unmarshal(m.Content, &text); err == nil {
+		return text, nil
+	}
+
+	// Check for null
+	if string(m.Content) == "null" {
+		return "", nil
+	}
+
+	// For non-string JSON (objects, numbers, booleans), parse and handle appropriately
+	var jsonValue interface{}
+	if err := json.Unmarshal(m.Content, &jsonValue); err != nil {
 		return "", err
 	}
-	return text, nil
+
+	// Check if it's a simple type that can be converted to string
+	switch v := jsonValue.(type) {
+	case string:
+		return v, nil
+	case float64:
+		// JSON numbers are float64
+		if v == float64(int64(v)) {
+			return fmt.Sprintf("%.0f", v), nil
+		}
+		return fmt.Sprintf("%g", v), nil
+	case bool:
+		if v {
+			return "true", nil
+		}
+		return "false", nil
+	case nil:
+		return "", nil
+	case []interface{}:
+		// Arrays should return an error according to the test
+		return "", fmt.Errorf("cannot convert array content to text")
+	case map[string]interface{}:
+		// For objects, return the original JSON string to preserve formatting
+		return string(m.Content), nil
+	default:
+		// For other types, return the JSON representation as string
+		result, err := json.Marshal(jsonValue)
+		if err != nil {
+			return "", err
+		}
+		return string(result), nil
+	}
 }
 
 // GetMultiContent attempts to get multi-part content from a message

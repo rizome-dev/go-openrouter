@@ -211,7 +211,7 @@ func (r *ResearchAgent) Research(ctx context.Context, topic string, depth int) (
 // extractSubtopics attempts to extract subtopics from the response
 func (r *ResearchAgent) extractSubtopics(resp *models.ChatCompletionResponse, maxCount int) []string {
 	if len(resp.Choices) == 0 || resp.Choices[0].Message == nil {
-		return nil
+		return []string{}
 	}
 
 	content, _ := resp.Choices[0].Message.GetTextContent()
@@ -222,24 +222,32 @@ func (r *ResearchAgent) extractSubtopics(resp *models.ChatCompletionResponse, ma
 
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
-		// Look for numbered lists or bullet points
-		if strings.HasPrefix(line, "1.") || strings.HasPrefix(line, "2.") ||
-			strings.HasPrefix(line, "3.") || strings.HasPrefix(line, "•") ||
-			strings.HasPrefix(line, "-") || strings.HasPrefix(line, "*") {
-			// Extract the topic
-			topic := strings.TrimSpace(strings.TrimPrefix(line, "1."))
-			topic = strings.TrimSpace(strings.TrimPrefix(topic, "2."))
-			topic = strings.TrimSpace(strings.TrimPrefix(topic, "3."))
-			topic = strings.TrimSpace(strings.TrimPrefix(topic, "•"))
-			topic = strings.TrimSpace(strings.TrimPrefix(topic, "-"))
-			topic = strings.TrimSpace(strings.TrimPrefix(topic, "*"))
+		if line == "" {
+			continue
+		}
 
-			if topic != "" && len(subtopics) < maxCount {
-				subtopics = append(subtopics, topic)
-			}
+		// Look for numbered lists or bullet points
+		var topic string
+		
+		// Check for numbered lists (1., 2., 3., etc.)
+		if len(line) > 2 && line[1] == '.' && line[0] >= '0' && line[0] <= '9' {
+			topic = strings.TrimSpace(line[2:])
+		} else if strings.HasPrefix(line, "•") {
+			topic = strings.TrimSpace(strings.TrimPrefix(line, "•"))
+		} else if strings.HasPrefix(line, "-") {
+			topic = strings.TrimSpace(strings.TrimPrefix(line, "-"))
+		} else if strings.HasPrefix(line, "*") {
+			topic = strings.TrimSpace(strings.TrimPrefix(line, "*"))
+		}
+
+		if topic != "" && len(subtopics) < maxCount {
+			subtopics = append(subtopics, topic)
 		}
 	}
 
+	if len(subtopics) == 0 {
+		return []string{}
+	}
 	return subtopics
 }
 

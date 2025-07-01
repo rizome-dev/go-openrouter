@@ -296,7 +296,7 @@ func (m *MultiModalHelper) detectImageContentType(data []byte) string {
 	}
 
 	// Check WebP signature
-	if len(data) > 12 && string(data[0:4]) == "RIFF" && string(data[8:12]) == "WEBP" {
+	if len(data) >= 12 && string(data[0:4]) == "RIFF" && string(data[8:12]) == "WEBP" {
 		return "image/webp"
 	}
 

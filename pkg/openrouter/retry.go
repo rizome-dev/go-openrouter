@@ -96,34 +96,8 @@ func (r *RetryClient) CreateChatCompletion(ctx context.Context, req models.ChatC
 
 // CreateChatCompletionStream creates a streaming chat completion with retry logic
 func (r *RetryClient) CreateChatCompletionStream(ctx context.Context, req models.ChatCompletionRequest) (*streaming.ChatCompletionStreamReader, error) {
-	var lastErr error
-
-	for attempt := 0; attempt <= r.config.MaxRetries; attempt++ {
-		// Calculate delay for this attempt
-		if attempt > 0 {
-			delay := r.calculateDelay(attempt)
-			select {
-			case <-ctx.Done():
-				return nil, ctx.Err()
-			case <-time.After(delay):
-			}
-		}
-
-		// Make request
-		stream, err := r.Client.CreateChatCompletionStream(ctx, req)
-		if err == nil {
-			return stream, nil
-		}
-
-		lastErr = err
-
-		// Check if error is retryable
-		if !r.isRetryable(err) {
-			return nil, err
-		}
-	}
-
-	return nil, fmt.Errorf("max retries exceeded: %w", lastErr)
+	// Streaming requests don't support retries due to the nature of the stream
+	return nil, fmt.Errorf("retry not supported for streaming")
 }
 
 // calculateDelay calculates the delay for a given attempt

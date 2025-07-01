@@ -31,6 +31,18 @@ const (
 
 	// ErrorCodeNoAvailableModel indicates no available model provider
 	ErrorCodeNoAvailableModel ErrorCode = 503
+
+	// ErrorCodeBadGateway indicates bad gateway error
+	ErrorCodeBadGateway ErrorCode = 502
+
+	// ErrorCodeServiceUnavailable indicates service unavailable
+	ErrorCodeServiceUnavailable ErrorCode = 503
+
+	// ErrorCodeInternalServerError indicates internal server error
+	ErrorCodeInternalServerError ErrorCode = 500
+
+	// ErrorCodeGatewayTimeout indicates gateway timeout
+	ErrorCodeGatewayTimeout ErrorCode = 504
 )
 
 // ErrorResponse represents an error response from the OpenRouter API
