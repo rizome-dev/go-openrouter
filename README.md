@@ -1,7 +1,7 @@
 # OpenRouterGo
 
 ```bash
-go get github.com/rizome-dev/openroutergo
+go get github.com/rizome-dev/go-openrouter
 ```
 
 ## Quick Start
@@ -14,8 +14,8 @@ import (
     "fmt"
     "log"
     
-    "github.com/rizome-dev/openroutergo/pkg/openrouter"
-    "github.com/rizome-dev/openroutergo/pkg/models"
+    "github.com/rizome-dev/go-openrouter/pkg/openrouter"
+    "github.com/rizome-dev/go-openrouter/pkg/models"
 )
 
 func main() {

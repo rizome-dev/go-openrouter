@@ -6,12 +6,11 @@ import (
 	"fmt"
 	"log"
 	"math"
-	"net/http"
 	"os"
 	"strings"
 
-	"github.com/rizome-dev/openroutergo/pkg/models"
-	"github.com/rizome-dev/openroutergo/pkg/openrouter"
+	"github.com/rizome-dev/go-openrouter/pkg/models"
+	"github.com/rizome-dev/go-openrouter/pkg/openrouter"
 )
 
 func main() {
@@ -23,7 +22,7 @@ func main() {
 
 	// Create client
 	client := openrouter.NewClient(apiKey,
-		openrouter.WithHTTPReferer("https://github.com/rizome-dev/openroutergo"),
+		openrouter.WithHTTPReferer("https://github.com/rizome-dev/go-openrouter"),
 		openrouter.WithXTitle("OpenRouterGo Tools Example"),
 	)
 

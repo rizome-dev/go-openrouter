@@ -8,9 +8,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/rizome-dev/openroutergo/pkg/errors"
-	"github.com/rizome-dev/openroutergo/pkg/models"
-	"github.com/rizome-dev/openroutergo/pkg/openrouter"
+	"github.com/rizome-dev/go-openrouter/pkg/errors"
+	"github.com/rizome-dev/go-openrouter/pkg/models"
+	"github.com/rizome-dev/go-openrouter/pkg/openrouter"
 )
 
 func main() {
@@ -51,7 +51,7 @@ func observableExample(apiKey string) {
 			LogResponses: true,
 			TrackCosts:   true,
 		},
-		openrouter.WithHTTPReferer("https://github.com/rizome-dev/openroutergo"),
+		openrouter.WithHTTPReferer("https://github.com/rizome-dev/go-openrouter"),
 		openrouter.WithXTitle("Comprehensive Example"),
 	)
 
@@ -219,7 +219,6 @@ func completeWorkflowExample(apiKey string) {
 	// Wrap with retry logic
 	retryClient := &openrouter.RetryClient{
 		Client: baseClient.Client,
-		config: openrouter.DefaultRetryConfig(),
 	}
 
 	ctx := context.Background()

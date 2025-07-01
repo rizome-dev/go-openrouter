@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/rizome-dev/openroutergo/pkg/errors"
+	"github.com/rizome-dev/go-openrouter/pkg/errors"
 )
 
 const (

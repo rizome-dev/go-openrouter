@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/rizome-dev/openroutergo/pkg/models"
+	"github.com/rizome-dev/go-openrouter/pkg/models"
 )
 
 // StructuredOutput provides helper methods for structured outputs

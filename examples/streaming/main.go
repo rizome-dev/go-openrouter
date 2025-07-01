@@ -8,8 +8,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/rizome-dev/openroutergo/pkg/models"
-	"github.com/rizome-dev/openroutergo/pkg/openrouter"
+	"github.com/rizome-dev/go-openrouter/pkg/models"
+	"github.com/rizome-dev/go-openrouter/pkg/openrouter"
 )
 
 func main() {
@@ -21,7 +21,7 @@ func main() {
 
 	// Create client
 	client := openrouter.NewClient(apiKey,
-		openrouter.WithHTTPReferer("https://github.com/rizome-dev/openroutergo"),
+		openrouter.WithHTTPReferer("https://github.com/rizome-dev/go-openrouter"),
 		openrouter.WithXTitle("OpenRouterGo Streaming Example"),
 	)
 
@@ -125,7 +125,7 @@ func concurrentStreaming(client *openrouter.Client) {
 	concurrentClient := openrouter.NewConcurrentClient(
 		os.Getenv("OPENROUTER_API_KEY"),
 		3, // Max 3 concurrent requests
-		openrouter.WithHTTPReferer("https://github.com/rizome-dev/openroutergo"),
+		openrouter.WithHTTPReferer("https://github.com/rizome-dev/go-openrouter"),
 		openrouter.WithXTitle("OpenRouterGo Concurrent Example"),
 	)
 

@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/rizome-dev/openroutergo/pkg/models"
+	"github.com/rizome-dev/go-openrouter/pkg/models"
 )
 
 // MultiModalHelper provides utilities for working with multi-modal inputs

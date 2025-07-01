@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/rizome-dev/openroutergo/pkg/models"
+	"github.com/rizome-dev/go-openrouter/pkg/models"
 )
 
 // GetGeneration retrieves metadata about a specific generation

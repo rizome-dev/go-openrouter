@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/rizome-dev/openroutergo/pkg/models"
+	"github.com/rizome-dev/go-openrouter/pkg/models"
 )
 
 // WebSearchHelper provides utilities for web search functionality

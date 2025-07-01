@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/rizome-dev/openroutergo/pkg/models"
-	"github.com/rizome-dev/openroutergo/pkg/streaming"
+	"github.com/rizome-dev/go-openrouter/pkg/models"
+	"github.com/rizome-dev/go-openrouter/pkg/streaming"
 )
 
 // CompletionRequest represents a text completion request

@@ -6,8 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/rizome-dev/openroutergo/pkg/models"
-	"github.com/rizome-dev/openroutergo/pkg/openrouter"
+	"github.com/rizome-dev/go-openrouter/pkg/openrouter"
 )
 
 func main() {
@@ -19,7 +18,7 @@ func main() {
 
 	// Create client
 	client := openrouter.NewClient(apiKey,
-		openrouter.WithHTTPReferer("https://github.com/rizome-dev/openroutergo"),
+		openrouter.WithHTTPReferer("https://github.com/rizome-dev/go-openrouter"),
 		openrouter.WithXTitle("OpenRouterGo Multi-Modal Example"),
 	)
 
@@ -91,8 +90,6 @@ func imageAnalysisExample(client *openrouter.Client) {
 }
 
 func pdfProcessingExample(client *openrouter.Client) {
-	helper := openrouter.NewMultiModalHelper(client)
-	ctx := context.Background()
 
 	// Note: This example requires an actual PDF file
 	// For demonstration, we'll show the structure

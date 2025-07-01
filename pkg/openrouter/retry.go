@@ -7,9 +7,9 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/rizome-dev/openroutergo/pkg/errors"
-	"github.com/rizome-dev/openroutergo/pkg/models"
-	"github.com/rizome-dev/openroutergo/pkg/streaming"
+	"github.com/rizome-dev/go-openrouter/pkg/errors"
+	"github.com/rizome-dev/go-openrouter/pkg/models"
+	"github.com/rizome-dev/go-openrouter/pkg/streaming"
 )
 
 // RetryConfig represents retry configuration

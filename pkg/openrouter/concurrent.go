@@ -4,7 +4,7 @@ import (
 	"context"
 	"sync"
 
-	"github.com/rizome-dev/openroutergo/pkg/models"
+	"github.com/rizome-dev/go-openrouter/pkg/models"
 )
 
 // ConcurrentClient wraps Client with concurrent execution capabilities

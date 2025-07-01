@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/rizome-dev/openroutergo/pkg/models"
+	"github.com/rizome-dev/go-openrouter/pkg/models"
 )
 
 // Logger interface for custom logging
