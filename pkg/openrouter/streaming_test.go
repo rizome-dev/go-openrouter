@@ -192,7 +192,7 @@ func TestStreamingError(t *testing.T) {
 		if err == io.EOF {
 			break
 		}
-		
+
 		if err != nil {
 			gotError = true
 			break
@@ -260,14 +260,14 @@ func TestStreamingWithUsage(t *testing.T) {
 func TestStreamCancellation(t *testing.T) {
 	// Track if the connection was closed
 	connectionClosed := make(chan bool, 1)
-	
+
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/event-stream")
 		flusher := w.(http.Flusher)
 
 		// Monitor for client disconnect
 		notify := r.Context().Done()
-		
+
 		go func() {
 			<-notify
 			connectionClosed <- true
@@ -289,7 +289,7 @@ func TestStreamCancellation(t *testing.T) {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	client := NewClient("test-key", WithBaseURL(server.URL))
-	
+
 	stream, err := client.CreateChatCompletionStream(ctx, models.ChatCompletionRequest{
 		Model:    "test-model",
 		Messages: []models.Message{models.NewTextMessage(models.RoleUser, "Test")},
@@ -369,7 +369,7 @@ func TestInvalidSSEData(t *testing.T) {
 func TestStreamingWithEmptyLines(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/event-stream")
-		
+
 		// SSE format with various empty lines and comments
 		response := strings.Join([]string{
 			": Comment line",
@@ -383,7 +383,7 @@ func TestStreamingWithEmptyLines(t *testing.T) {
 			"data: [DONE]",
 			"",
 		}, "\n")
-		
+
 		fmt.Fprint(w, response)
 	}))
 	defer server.Close()

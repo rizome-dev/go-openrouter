@@ -135,7 +135,7 @@ func TestPluginsInRequest(t *testing.T) {
 
 		// Verify plugins
 		assert.Len(t, req.Plugins, 2)
-		
+
 		// Check web plugin
 		webPlugin := req.Plugins[0]
 		assert.Equal(t, "web", webPlugin.ID)
@@ -365,10 +365,10 @@ func TestPluginEdgeCases(t *testing.T) {
 		plugin := models.Plugin{
 			ID: "",
 		}
-		
+
 		data, err := json.Marshal(plugin)
 		require.NoError(t, err)
-		
+
 		var decoded models.Plugin
 		err = json.Unmarshal(data, &decoded)
 		require.NoError(t, err)

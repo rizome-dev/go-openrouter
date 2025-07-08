@@ -228,7 +228,7 @@ func (r *ResearchAgent) extractSubtopics(resp *models.ChatCompletionResponse, ma
 
 		// Look for numbered lists or bullet points
 		var topic string
-		
+
 		// Check for numbered lists (1., 2., 3., etc.)
 		if len(line) > 2 && line[1] == '.' && line[0] >= '0' && line[0] <= '9' {
 			topic = strings.TrimSpace(line[2:])

@@ -150,7 +150,7 @@ func (suite *E2ETestSuite) TestImageWithStructuredOutput() {
 	var analysis ImageAnalysis
 	content, err := resp.Choices[0].Message.GetTextContent()
 	require.NoError(suite.T(), err)
-	
+
 	err = json.Unmarshal([]byte(content), &analysis)
 	require.NoError(suite.T(), err)
 

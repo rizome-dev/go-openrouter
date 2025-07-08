@@ -88,10 +88,10 @@ func TestRetryClient(t *testing.T) {
 				}
 			},
 			retryConfig: RetryConfig{
-				MaxRetries:     3,
-				InitialDelay: 50 * time.Millisecond,
-				MaxDelay:     500 * time.Millisecond,
-				BackoffFactor:  2.0,
+				MaxRetries:    3,
+				InitialDelay:  50 * time.Millisecond,
+				MaxDelay:      500 * time.Millisecond,
+				BackoffFactor: 2.0,
 				RetryableErrors: map[errors.ErrorCode]bool{
 					errors.ErrorCodeRateLimited: true,
 					errors.ErrorCodeModelDown:   true,
@@ -135,7 +135,7 @@ func TestRetryClient(t *testing.T) {
 				}
 			},
 			retryConfig: RetryConfig{
-				MaxRetries:     3,
+				MaxRetries:   3,
 				InitialDelay: 50 * time.Millisecond,
 				RetryableErrors: map[errors.ErrorCode]bool{
 					errors.ErrorCodeModelDown: true,
@@ -163,7 +163,7 @@ func TestRetryClient(t *testing.T) {
 				}
 			},
 			retryConfig: RetryConfig{
-				MaxRetries:     3,
+				MaxRetries:   3,
 				InitialDelay: 50 * time.Millisecond,
 			},
 			expectSuccess: false,
@@ -188,7 +188,7 @@ func TestRetryClient(t *testing.T) {
 				}
 			},
 			retryConfig: RetryConfig{
-				MaxRetries:     2,
+				MaxRetries:   2,
 				InitialDelay: 50 * time.Millisecond,
 				RetryableErrors: map[errors.ErrorCode]bool{
 					errors.ErrorCodeNoAvailableModel: true,
@@ -232,10 +232,10 @@ func TestRetryClient(t *testing.T) {
 				}
 			},
 			retryConfig: RetryConfig{
-				MaxRetries:     5,
-				InitialDelay: 10 * time.Millisecond,
-				MaxDelay:     100 * time.Millisecond,
-				BackoffFactor:  2.0,
+				MaxRetries:    5,
+				InitialDelay:  10 * time.Millisecond,
+				MaxDelay:      100 * time.Millisecond,
+				BackoffFactor: 2.0,
 				RetryableErrors: map[errors.ErrorCode]bool{
 					errors.ErrorCodeRateLimited: true,
 				},
@@ -305,7 +305,7 @@ func TestRetryWithContext(t *testing.T) {
 	retryClient := &RetryClient{
 		Client: baseClient,
 		config: &RetryConfig{
-			MaxRetries:     5,
+			MaxRetries:   5,
 			InitialDelay: 200 * time.Millisecond,
 			RetryableErrors: map[errors.ErrorCode]bool{
 				errors.ErrorCodeServiceUnavailable: true,
@@ -332,11 +332,11 @@ func TestRetryWithContext(t *testing.T) {
 	if !strings.Contains(err.Error(), "context") {
 		assert.Contains(t, err.Error(), "max retries exceeded")
 	}
-	
-	// Should have attempted some calls  
+
+	// Should have attempted some calls
 	count := atomic.LoadInt32(&callCount)
 	assert.GreaterOrEqual(t, count, int32(1))
-	
+
 	// Should have stopped close to timeout
 	assert.Less(t, elapsed, 250*time.Millisecond)
 }
@@ -424,15 +424,15 @@ func TestRetryableErrors(t *testing.T) {
 			retryClient := &RetryClient{
 				Client: baseClient,
 				config: &RetryConfig{
-					MaxRetries:     2,
+					MaxRetries:   2,
 					InitialDelay: 10 * time.Millisecond,
 					RetryableErrors: map[errors.ErrorCode]bool{
-						errors.ErrorCodeTimeout:          true,
-						errors.ErrorCodeRateLimited:      true,
-						errors.ErrorCodeModelDown:        true,
-						errors.ErrorCodeNoAvailableModel: true,
+						errors.ErrorCodeTimeout:             true,
+						errors.ErrorCodeRateLimited:         true,
+						errors.ErrorCodeModelDown:           true,
+						errors.ErrorCodeNoAvailableModel:    true,
 						errors.ErrorCodeInternalServerError: true,
-						errors.ErrorCodeGatewayTimeout:   true,
+						errors.ErrorCodeGatewayTimeout:      true,
 					},
 				},
 			}
@@ -480,10 +480,10 @@ func TestRetryWithJitter(t *testing.T) {
 	retryClient := &RetryClient{
 		Client: baseClient,
 		config: &RetryConfig{
-			MaxRetries:     3,
-			InitialDelay: 100 * time.Millisecond,
-			BackoffFactor:  1.0, // Fixed backoff to test jitter
-			JitterFactor:   0.2,
+			MaxRetries:    3,
+			InitialDelay:  100 * time.Millisecond,
+			BackoffFactor: 1.0, // Fixed backoff to test jitter
+			JitterFactor:  0.2,
 			RetryableErrors: map[errors.ErrorCode]bool{
 				errors.ErrorCodeNoAvailableModel: true,
 			},

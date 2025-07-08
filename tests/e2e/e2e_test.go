@@ -82,12 +82,12 @@ func (suite *E2ETestSuite) TestBasicChatCompletion() {
 
 	content, err := resp.Choices[0].Message.GetTextContent()
 	assert.NoError(suite.T(), err)
-	
+
 	// Debug output
 	if content == "" {
 		suite.T().Logf("Empty content received. Message: %+v", resp.Choices[0].Message)
 	}
-	
+
 	assert.NotEmpty(suite.T(), content)
 
 	// Check usage

@@ -87,7 +87,7 @@ type ReasoningConfig struct {
 	// Either effort or max_tokens can be set (not both)
 	Effort    string `json:"effort,omitempty"`     // "low", "medium", "high"
 	MaxTokens *int   `json:"max_tokens,omitempty"` // Direct token allocation
-	
+
 	// Optional settings
 	Exclude *bool `json:"exclude,omitempty"` // Exclude reasoning from response
 	Enabled *bool `json:"enabled,omitempty"` // Enable reasoning with defaults

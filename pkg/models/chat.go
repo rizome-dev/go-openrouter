@@ -75,8 +75,8 @@ type Message struct {
 	Annotations []Annotation `json:"annotations,omitempty"`
 
 	// Model-specific fields
-	Refusal          *string          `json:"refusal,omitempty"`
-	Reasoning        string           `json:"reasoning,omitempty"`
+	Refusal          *string           `json:"refusal,omitempty"`
+	Reasoning        string            `json:"reasoning,omitempty"`
 	ReasoningDetails []ReasoningDetail `json:"reasoning_details,omitempty"`
 }
 
@@ -130,7 +130,7 @@ func (m Message) GetTextContent() (string, error) {
 	// First try to unmarshal as string
 	var text string
 	if err := json.Unmarshal(m.Content, &text); err == nil {
-		// If content is empty but reasoning is populated, 
+		// If content is empty but reasoning is populated,
 		// some models (like Qwen, DeepSeek) might not return actual content
 		if text == "" && m.Reasoning != "" {
 			// For now, we'll still return empty content as the reasoning

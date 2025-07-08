@@ -32,7 +32,7 @@ func (c *Client) ListAPIKeys(ctx context.Context, opts *ListAPIKeysOptions) (*mo
 			endpoint += "?" + params.Encode()
 		}
 	}
-	
+
 	resp, err := c.doRequest(ctx, "GET", endpoint, nil)
 	if err != nil {
 		return nil, err
@@ -158,7 +158,7 @@ func (c *Client) ListModelEndpoints(ctx context.Context, model string) (*models.
 	if len(parts) != 2 {
 		return nil, fmt.Errorf("invalid model format: expected 'author/slug', got '%s'", model)
 	}
-	
+
 	resp, err := c.doRequest(ctx, "GET", fmt.Sprintf("/api/v1/endpoints/%s/%s", parts[0], parts[1]), nil)
 	if err != nil {
 		return nil, err

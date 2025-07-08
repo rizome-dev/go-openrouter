@@ -116,10 +116,10 @@ func TestComprehensiveErrorHandling(t *testing.T) {
 					Code:    403,
 					Message: "Input flagged by moderation",
 					Metadata: map[string]interface{}{
-						"reasons":        []interface{}{"violence", "hate_speech"},
-						"flagged_input":  "This is the flagged...",
-						"provider_name":  "openai",
-						"model_slug":     "gpt-4",
+						"reasons":       []interface{}{"violence", "hate_speech"},
+						"flagged_input": "This is the flagged...",
+						"provider_name": "openai",
+						"model_slug":    "gpt-4",
 					},
 				},
 			},
@@ -417,12 +417,12 @@ func TestNoContentGenerated(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.NotNil(t, resp)
-	
+
 	// Check that content is empty
 	content, err := resp.Choices[0].Message.GetTextContent()
 	assert.NoError(t, err)
 	assert.Empty(t, content)
-	
+
 	// But usage shows prompt was processed
 	assert.Equal(t, 100, resp.Usage.PromptTokens)
 	assert.Equal(t, 0, resp.Usage.CompletionTokens)
@@ -435,7 +435,7 @@ func TestErrorResponseHeaders(t *testing.T) {
 		w.Header().Set("X-RateLimit-Limit", "100")
 		w.Header().Set("X-RateLimit-Remaining", "0")
 		w.Header().Set("X-RateLimit-Reset", "1640995200")
-		
+
 		w.WriteHeader(429)
 		json.NewEncoder(w).Encode(errors.ErrorResponse{
 			Error: struct {

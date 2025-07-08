@@ -7,18 +7,18 @@ type GenerationResponse struct {
 
 // Generation represents metadata about a specific generation
 type Generation struct {
-	ID                string                 `json:"id"`
-	Model             string                 `json:"model"`
-	Object            string                 `json:"object"`
-	Created           int64                  `json:"created"`
-	Usage             interface{}            `json:"usage"`
-	NativeTokenCounts NativeTokenCounts      `json:"native_token_counts"`
-	Metrics           GenerationMetrics      `json:"metrics"`
-	Provider          string                 `json:"provider"`
-	Error             *GenerationError       `json:"error,omitempty"`
-	Moderation        *ModerationInfo        `json:"moderation,omitempty"`
-	Transforms        []string               `json:"transforms,omitempty"`
-	Origin            interface{} `json:"origin,omitempty"`
+	ID                string            `json:"id"`
+	Model             string            `json:"model"`
+	Object            string            `json:"object"`
+	Created           int64             `json:"created"`
+	Usage             interface{}       `json:"usage"`
+	NativeTokenCounts NativeTokenCounts `json:"native_token_counts"`
+	Metrics           GenerationMetrics `json:"metrics"`
+	Provider          string            `json:"provider"`
+	Error             *GenerationError  `json:"error,omitempty"`
+	Moderation        *ModerationInfo   `json:"moderation,omitempty"`
+	Transforms        []string          `json:"transforms,omitempty"`
+	Origin            interface{}       `json:"origin,omitempty"`
 }
 
 // GenerationUsage represents token usage with costs

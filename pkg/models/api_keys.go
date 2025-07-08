@@ -4,15 +4,15 @@ import "time"
 
 // APIKey represents an API key
 type APIKey struct {
-	CreatedAt time.Time  `json:"created_at"`
-	UpdatedAt time.Time  `json:"updated_at"`
-	Hash      string     `json:"hash"`
-	Label     string     `json:"label,omitempty"`
-	Name      string     `json:"name"`
-	Disabled  bool       `json:"disabled"`
-	Limit     float64    `json:"limit,omitempty"`
-	Usage     float64    `json:"usage"`
-	Key       string     `json:"key,omitempty"` // Only returned when creating a new key
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+	Hash      string    `json:"hash"`
+	Label     string    `json:"label,omitempty"`
+	Name      string    `json:"name"`
+	Disabled  bool      `json:"disabled"`
+	Limit     float64   `json:"limit,omitempty"`
+	Usage     float64   `json:"usage"`
+	Key       string    `json:"key,omitempty"` // Only returned when creating a new key
 }
 
 // APIKeysResponse represents the response from listing API keys
@@ -22,10 +22,10 @@ type APIKeysResponse struct {
 
 // CreateAPIKeyRequest represents a request to create an API key
 type CreateAPIKeyRequest struct {
-	Name                string  `json:"name"`
-	Label               string  `json:"label,omitempty"`
-	Limit               float64 `json:"limit,omitempty"`
-	IncludeBYOKInLimit  bool    `json:"include_byok_in_limit,omitempty"`
+	Name               string  `json:"name"`
+	Label              string  `json:"label,omitempty"`
+	Limit              float64 `json:"limit,omitempty"`
+	IncludeBYOKInLimit bool    `json:"include_byok_in_limit,omitempty"`
 }
 
 // UpdateAPIKeyRequest represents a request to update an API key
@@ -58,8 +58,8 @@ type CreditsResponse struct {
 
 // CreateCoinbaseChargeRequest represents a request to create a Coinbase charge
 type CreateCoinbaseChargeRequest struct {
-	Amount  float64 `json:"amount"`  // USD amount
-	Sender  string  `json:"sender"`  // Ethereum address
+	Amount  float64 `json:"amount"` // USD amount
+	Sender  string  `json:"sender"` // Ethereum address
 	ChainID int     `json:"chain_id"`
 }
 

@@ -155,14 +155,14 @@ func (suite *E2ETestSuite) TestStructuredOutputHelper() {
 	req.ResponseFormat = &models.ResponseFormat{
 		Type: "json_object",
 	}
-	
+
 	resp, err := suite.client.CreateChatCompletion(ctx, req)
 	require.NoError(suite.T(), err)
 
 	var analysis Analysis
 	content, err := resp.Choices[0].Message.GetTextContent()
 	require.NoError(suite.T(), err)
-	
+
 	err = json.Unmarshal([]byte(content), &analysis)
 	require.NoError(suite.T(), err)
 
@@ -214,14 +214,14 @@ func (suite *E2ETestSuite) TestStructuredOutputNested() {
 	req.ResponseFormat = &models.ResponseFormat{
 		Type: "json_object",
 	}
-	
+
 	resp, err := suite.client.CreateChatCompletion(ctx, req)
 	require.NoError(suite.T(), err)
 
 	var company Company
 	content, err := resp.Choices[0].Message.GetTextContent()
 	require.NoError(suite.T(), err)
-	
+
 	err = json.Unmarshal([]byte(content), &company)
 	require.NoError(suite.T(), err)
 

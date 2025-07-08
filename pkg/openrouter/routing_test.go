@@ -22,10 +22,10 @@ func TestProviderRouting(t *testing.T) {
 		{
 			name: "Allow specific providers",
 			providerPrefs: &models.ProviderPreferences{
-				AllowFallbacks:  boolPtr(true),
+				AllowFallbacks:    boolPtr(true),
 				RequireParameters: boolPtr(true),
-				DataCollection:  models.DataCollectionDeny,
-				Order: []string{"openai", "anthropic"},
+				DataCollection:    models.DataCollectionDeny,
+				Order:             []string{"openai", "anthropic"},
 			},
 			expectedProvider: "openai",
 			verifyRequest: func(t *testing.T, req models.ChatCompletionRequest) {
@@ -40,7 +40,7 @@ func TestProviderRouting(t *testing.T) {
 		{
 			name: "Block specific providers",
 			providerPrefs: &models.ProviderPreferences{
-				Ignore: []string{"anthropic", "google"},
+				Ignore:        []string{"anthropic", "google"},
 				Quantizations: []models.QuantizationLevel{models.QuantizationBF16},
 			},
 			expectedProvider: "openai",
@@ -65,7 +65,7 @@ func TestProviderRouting(t *testing.T) {
 			name: "Cost constraints",
 			providerPrefs: &models.ProviderPreferences{
 				MaxPrice: &models.MaxPrice{
-					Prompt: 0.01,
+					Prompt:     0.01,
 					Completion: 0.01,
 				},
 			},
@@ -90,8 +90,8 @@ func TestProviderRouting(t *testing.T) {
 				tt.verifyRequest(t, req)
 
 				resp := models.ChatCompletionResponse{
-					ID:       "resp-123",
-					Model:    req.Model,
+					ID:    "resp-123",
+					Model: req.Model,
 					Choices: []models.Choice{
 						{
 							Message: &models.Message{
@@ -242,7 +242,7 @@ func TestAssistantPrefill(t *testing.T) {
 		assert.Equal(t, 2, len(req.Messages))
 		lastMsg := req.Messages[len(req.Messages)-1]
 		assert.Equal(t, models.RoleAssistant, lastMsg.Role)
-		
+
 		content, _ := lastMsg.GetTextContent()
 		assert.Equal(t, "I think the answer is", content)
 
@@ -322,7 +322,7 @@ func TestPredictedOutput(t *testing.T) {
 
 	resp, err := client.CreateChatCompletion(context.Background(), req)
 	require.NoError(t, err)
-	
+
 	content, _ := resp.Choices[0].Message.GetTextContent()
 	assert.Contains(t, content, "sunny")
 }
@@ -395,24 +395,24 @@ func TestAdvancedParameters(t *testing.T) {
 		Messages: []models.Message{
 			models.NewTextMessage(models.RoleUser, "Test with parameters"),
 		},
-		MaxTokens:          &maxTokens,
-		Temperature:        &temperature,
-		TopP:               &topP,
-		TopK:               &topK,
-		FrequencyPenalty:   &frequencyPenalty,
-		PresencePenalty:    &presencePenalty,
-		RepetitionPenalty:  &repetitionPenalty,
-		Seed:               &seed,
-		TopLogprobs:        &topLogprobs,
-		MinP:               &minP,
-		TopA:               &topA,
-		LogitBias:          map[string]float64{"123": 2.0},
+		MaxTokens:         &maxTokens,
+		Temperature:       &temperature,
+		TopP:              &topP,
+		TopK:              &topK,
+		FrequencyPenalty:  &frequencyPenalty,
+		PresencePenalty:   &presencePenalty,
+		RepetitionPenalty: &repetitionPenalty,
+		Seed:              &seed,
+		TopLogprobs:       &topLogprobs,
+		MinP:              &minP,
+		TopA:              &topA,
+		LogitBias:         map[string]float64{"123": 2.0},
 	}
 
 	resp, err := client.CreateChatCompletion(context.Background(), req)
 	require.NoError(t, err)
 	assert.NotNil(t, resp)
-	
+
 	// Check logprobs in response
 	if len(resp.Choices) > 0 && resp.Choices[0].Logprobs != nil {
 		assert.NotEmpty(t, resp.Choices[0].Logprobs.Content)

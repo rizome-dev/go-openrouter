@@ -45,14 +45,14 @@ func main() {
 		msg := resp.Choices[0].Message
 		content := getMessageContent(msg)
 		fmt.Printf("Response: %s\n", content)
-		
+
 		// Check if reasoning is present (some models like Gemini include this)
 		// Note: When using low max_tokens with models that include reasoning,
 		// the actual content might be truncated in favor of the reasoning field
 		if msg.Reasoning != "" {
 			fmt.Printf("\nReasoning: %s\n", msg.Reasoning)
 		}
-		
+
 		// Print finish reason
 		if resp.Choices[0].FinishReason != "" {
 			fmt.Printf("\nFinish reason: %s\n", resp.Choices[0].FinishReason)

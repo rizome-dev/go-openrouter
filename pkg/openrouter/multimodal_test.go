@@ -25,7 +25,7 @@ func TestMultiModalHelper_CreateWithImage(t *testing.T) {
 		// Check message structure
 		assert.Equal(t, 1, len(req.Messages))
 		msg := req.Messages[0]
-		
+
 		// Verify content is multi-part
 		var contents []interface{}
 		err = json.Unmarshal(msg.Content, &contents)
@@ -75,7 +75,7 @@ func TestMultiModalHelper_CreateWithImage(t *testing.T) {
 			resp, err := helper.CreateWithImage(context.Background(), "What's in this image?", tt.image, "test-model")
 			require.NoError(t, err)
 			assert.NotNil(t, resp)
-			
+
 			content, err := resp.Choices[0].Message.GetTextContent()
 			assert.NoError(t, err)
 			assert.Equal(t, "I see an image", content)
@@ -320,7 +320,7 @@ func TestPrepareImageContent(t *testing.T) {
 	img := ImageInput{URL: "https://example.com/image.jpg", Detail: "high"}
 	content, err := helper.prepareImageContent(img)
 	require.NoError(t, err)
-	
+
 	imageContent, ok := content.(models.ImageContent)
 	require.True(t, ok)
 	assert.Equal(t, "https://example.com/image.jpg", imageContent.ImageURL.URL)
@@ -330,7 +330,7 @@ func TestPrepareImageContent(t *testing.T) {
 	img = ImageInput{Data: []byte("test data")}
 	content, err = helper.prepareImageContent(img)
 	require.NoError(t, err)
-	
+
 	imageContent, ok = content.(models.ImageContent)
 	require.True(t, ok)
 	assert.Contains(t, imageContent.ImageURL.URL, "data:image/jpeg;base64,")
@@ -352,7 +352,7 @@ func TestPreparePDFContent(t *testing.T) {
 	}
 	content, err := helper.preparePDFContent(pdf)
 	require.NoError(t, err)
-	
+
 	fileContent, ok := content.(models.FileContent)
 	require.True(t, ok)
 	assert.Equal(t, "document.pdf", fileContent.File.Filename)
@@ -362,7 +362,7 @@ func TestPreparePDFContent(t *testing.T) {
 	pdf = PDFInput{Data: []byte("PDF content")}
 	content, err = helper.preparePDFContent(pdf)
 	require.NoError(t, err)
-	
+
 	fileContent, ok = content.(models.FileContent)
 	require.True(t, ok)
 	assert.Equal(t, "document.pdf", fileContent.File.Filename) // Default
@@ -423,7 +423,7 @@ func TestMultiModalWithAnnotations(t *testing.T) {
 func TestBase64Encoding(t *testing.T) {
 	testData := []byte("Test data for encoding")
 	encoded := base64.StdEncoding.EncodeToString(testData)
-	
+
 	// Verify it's valid base64
 	decoded, err := base64.StdEncoding.DecodeString(encoded)
 	require.NoError(t, err)
@@ -434,7 +434,7 @@ func TestBase64Encoding(t *testing.T) {
 	img := ImageInput{Data: testData}
 	content, err := helper.prepareImageContent(img)
 	require.NoError(t, err)
-	
+
 	imageContent := content.(models.ImageContent)
 	assert.Contains(t, imageContent.ImageURL.URL, encoded)
 }

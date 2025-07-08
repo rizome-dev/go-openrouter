@@ -19,11 +19,11 @@ func TestListAPIKeys(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "GET", r.Method)
 		assert.Equal(t, "/api/v1/keys", r.URL.Path)
-		
+
 		// Check query parameters
 		offset := r.URL.Query().Get("offset")
 		includeDisabled := r.URL.Query().Get("include_disabled")
-		
+
 		if offset == "10" {
 			assert.Equal(t, "10", offset)
 		}
@@ -149,7 +149,7 @@ func TestGetCurrentAPIKey(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "GET", r.Method)
 		assert.Equal(t, "/api/v1/me/keys", r.URL.Path)
-		
+
 		// Verify the API key is sent in the header
 		assert.Equal(t, "Bearer test-api-key", r.Header.Get("Authorization"))
 
@@ -431,4 +431,3 @@ func TestCreateCoinbaseCharge(t *testing.T) {
 	assert.Equal(t, "pending", charge.Status)
 	assert.NotEmpty(t, charge.CheckoutURL)
 }
-

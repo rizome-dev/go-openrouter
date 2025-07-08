@@ -162,7 +162,7 @@ func TestGetTextContent(t *testing.T) {
 			expected: "42",
 		},
 		{
-			name:     "Boolean as content", 
+			name:     "Boolean as content",
 			content:  json.RawMessage(`true`),
 			expected: "true",
 		},
@@ -183,7 +183,7 @@ func TestGetTextContent(t *testing.T) {
 				data, _ := json.Marshal(v)
 				content = json.RawMessage(data)
 			}
-			
+
 			msg := models.Message{
 				Role:    models.RoleAssistant,
 				Content: content,
@@ -420,8 +420,8 @@ func TestMessageValidation(t *testing.T) {
 			expectValid: true,
 		},
 		{
-			name: "Empty message",
-			msg:  models.Message{},
+			name:        "Empty message",
+			msg:         models.Message{},
 			expectValid: false,
 			errorMsg:    "role required",
 		},

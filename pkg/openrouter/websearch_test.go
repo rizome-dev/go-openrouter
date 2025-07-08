@@ -171,7 +171,7 @@ func TestWebSearchHelper_CreateWithNativeWebSearch(t *testing.T) {
 			helper := NewWebSearchHelper(client)
 
 			resp, err := helper.CreateWithNativeWebSearch(context.Background(), "Query", "perplexity/sonar", tt.contextSize)
-			
+
 			if tt.expectError {
 				assert.Error(t, err)
 			} else {
@@ -184,9 +184,9 @@ func TestWebSearchHelper_CreateWithNativeWebSearch(t *testing.T) {
 
 func TestExtractCitations(t *testing.T) {
 	tests := []struct {
-		name      string
-		response  *models.ChatCompletionResponse
-		expected  int
+		name     string
+		response *models.ChatCompletionResponse
+		expected int
 	}{
 		{
 			name: "Response with citations",
@@ -350,7 +350,7 @@ func TestResearchAgent(t *testing.T) {
 	callCount := 0
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		callCount++
-		
+
 		var req models.ChatCompletionRequest
 		err := json.NewDecoder(r.Body).Decode(&req)
 		require.NoError(t, err)
@@ -364,7 +364,7 @@ func TestResearchAgent(t *testing.T) {
 1. Machine Learning - algorithms that learn from data
 2. Neural Networks - systems inspired by the brain
 3. Natural Language Processing - understanding human language`
-			
+
 			annotations = []models.Annotation{
 				{
 					Type: models.AnnotationTypeURLCitation,
@@ -476,7 +476,7 @@ func TestExtractSubtopics(t *testing.T) {
 					},
 				},
 			}
-			
+
 			subtopics := agent.extractSubtopics(resp, 10)
 			assert.Equal(t, tt.expected, subtopics)
 		})
