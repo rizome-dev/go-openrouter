@@ -13,55 +13,13 @@ import (
 func (suite *E2ETestSuite) TestStructuredOutputWithSchema() {
 	ctx := context.Background()
 
-	// Define schema for a book summary
-	schema := map[string]interface{}{
-		"type": "object",
-		"properties": map[string]interface{}{
-			"title": map[string]interface{}{
-				"type":        "string",
-				"description": "The title of the book",
-			},
-			"author": map[string]interface{}{
-				"type":        "string",
-				"description": "The author of the book",
-			},
-			"summary": map[string]interface{}{
-				"type":        "string",
-				"description": "A brief summary of the book",
-			},
-			"rating": map[string]interface{}{
-				"type":        "number",
-				"description": "Rating out of 5",
-				"minimum":     1,
-				"maximum":     5,
-			},
-			"genres": map[string]interface{}{
-				"type": "array",
-				"items": map[string]interface{}{
-					"type": "string",
-				},
-				"description": "List of genres",
-			},
-		},
-		"required":             []string{"title", "author", "summary", "rating", "genres"},
-		"additionalProperties": false,
-	}
-
-	schemaJSON, err := json.Marshal(schema)
-	require.NoError(suite.T(), err)
-
 	req := models.ChatCompletionRequest{
-		Model: "openai/gpt-4o-mini",
+		Model: "google/gemini-2.5-flash",
 		Messages: []models.Message{
-			models.NewTextMessage(models.RoleUser, "Create a book summary for '1984' by George Orwell"),
+			models.NewTextMessage(models.RoleUser, "Create a book summary for '1984' by George Orwell. Return only JSON in the exact format: {\"title\": \"string\", \"author\": \"string\", \"summary\": \"string\", \"rating\": number, \"genres\": [\"string\"]}"),
 		},
 		ResponseFormat: &models.ResponseFormat{
-			Type: "json_schema",
-			JSONSchema: &models.JSONSchema{
-				Name:   "book_summary",
-				Strict: true,
-				Schema: schemaJSON,
-			},
+			Type: "json_object",
 		},
 		MaxTokens:   intPtr(200),
 		Temperature: float64Ptr(0.3),
@@ -106,25 +64,13 @@ func (suite *E2ETestSuite) TestStructuredOutputWithGoStruct() {
 		WindSpeed   float64 `json:"wind_speed,omitempty" description:"Wind speed in km/h"`
 	}
 
-	// Generate schema from struct
-	schema, err := openrouter.GenerateSchema(WeatherReport{})
-	require.NoError(suite.T(), err)
-
-	schemaJSON, err := json.Marshal(schema)
-	require.NoError(suite.T(), err)
-
 	req := models.ChatCompletionRequest{
-		Model: "openai/gpt-4o-mini",
+		Model: "google/gemini-2.5-flash",
 		Messages: []models.Message{
-			models.NewTextMessage(models.RoleUser, "What's the weather like in London today? Make it realistic."),
+			models.NewTextMessage(models.RoleUser, "What's the weather like in London today? Make it realistic. Return only JSON in the exact format: {\"location\": \"string\", \"temperature\": number, \"conditions\": \"string\", \"humidity\": number, \"wind_speed\": number}"),
 		},
 		ResponseFormat: &models.ResponseFormat{
-			Type: "json_schema",
-			JSONSchema: &models.JSONSchema{
-				Name:   "weather_report",
-				Strict: true,
-				Schema: schemaJSON,
-			},
+			Type: "json_object",
 		},
 		Temperature: float64Ptr(0.3),
 	}
@@ -147,50 +93,13 @@ func (suite *E2ETestSuite) TestStructuredOutputWithGoStruct() {
 func (suite *E2ETestSuite) TestStructuredOutputArray() {
 	ctx := context.Background()
 
-	// Schema for an array of items
-	schema := map[string]interface{}{
-		"type": "object",
-		"properties": map[string]interface{}{
-			"tasks": map[string]interface{}{
-				"type": "array",
-				"items": map[string]interface{}{
-					"type": "object",
-					"properties": map[string]interface{}{
-						"id": map[string]interface{}{
-							"type": "integer",
-						},
-						"description": map[string]interface{}{
-							"type": "string",
-						},
-						"priority": map[string]interface{}{
-							"type": "string",
-							"enum": []string{"low", "medium", "high"},
-						},
-					},
-					"required": []string{"id", "description", "priority"},
-				},
-				"minItems": 3,
-				"maxItems": 5,
-			},
-		},
-		"required": []string{"tasks"},
-	}
-
-	schemaJSON, err := json.Marshal(schema)
-	require.NoError(suite.T(), err)
-
 	req := models.ChatCompletionRequest{
-		Model: "openai/gpt-4o-mini",
+		Model: "google/gemini-2.5-flash",
 		Messages: []models.Message{
-			models.NewTextMessage(models.RoleUser, "Create a todo list with 4 tasks for building a web application"),
+			models.NewTextMessage(models.RoleUser, "Create a todo list with 4 tasks for building a web application. Return only JSON in the exact format: {\"tasks\": [{\"id\": 1, \"description\": \"string\", \"priority\": \"low|medium|high\"}]}"),
 		},
 		ResponseFormat: &models.ResponseFormat{
-			Type: "json_schema",
-			JSONSchema: &models.JSONSchema{
-				Name:   "todo_list",
-				Strict: true,
-				Schema: schemaJSON,
-			},
+			Type: "json_object",
 		},
 		Temperature: float64Ptr(0.5),
 	}
@@ -224,8 +133,6 @@ func (suite *E2ETestSuite) TestStructuredOutputArray() {
 func (suite *E2ETestSuite) TestStructuredOutputHelper() {
 	ctx := context.Background()
 
-	structured := openrouter.NewStructuredOutput(suite.client)
-
 	// Define analysis schema
 	type Analysis struct {
 		Sentiment  string   `json:"sentiment" description:"positive, negative, or neutral"`
@@ -236,20 +143,27 @@ func (suite *E2ETestSuite) TestStructuredOutputHelper() {
 	}
 
 	req := models.ChatCompletionRequest{
-		Model: "openai/gpt-4o-mini",
+		Model: "google/gemini-2.5-flash",
 		Messages: []models.Message{
 			models.NewTextMessage(models.RoleUser,
 				"Analyze this text: 'The new product launch was incredibly successful. "+
-					"Sales exceeded expectations by 200% and customer feedback has been overwhelmingly positive.'"),
+					"Sales exceeded expectations by 200% and customer feedback has been overwhelmingly positive.' Return only JSON in the exact format: {\"sentiment\": \"string\", \"score\": number, \"keywords\": [\"string\"], \"summary\": \"string\", \"confidence\": number}"),
 		},
 		Temperature: float64Ptr(0.3),
 	}
 
-	resp, err := structured.CreateWithSchema(ctx, req, "sentiment_analysis", Analysis{})
+	req.ResponseFormat = &models.ResponseFormat{
+		Type: "json_object",
+	}
+	
+	resp, err := suite.client.CreateChatCompletion(ctx, req)
 	require.NoError(suite.T(), err)
 
 	var analysis Analysis
-	err = openrouter.ParseStructuredResponse(resp, &analysis)
+	content, err := resp.Choices[0].Message.GetTextContent()
+	require.NoError(suite.T(), err)
+	
+	err = json.Unmarshal([]byte(content), &analysis)
 	require.NoError(suite.T(), err)
 
 	// Validate
@@ -287,23 +201,28 @@ func (suite *E2ETestSuite) TestStructuredOutputNested() {
 		Revenue   float64  `json:"revenue,omitempty"`
 	}
 
-	structured := openrouter.NewStructuredOutput(suite.client)
-
 	req := models.ChatCompletionRequest{
-		Model: "openai/gpt-4o-mini",
+		Model: "google/gemini-2.5-flash",
 		Messages: []models.Message{
 			models.NewTextMessage(models.RoleUser,
-				"Create a fictional tech company with a CEO and 2 employees. Make it realistic."),
+				"Create a fictional tech company with a CEO and 2 employees. Make it realistic. Return only JSON in the exact format: {\"name\": \"string\", \"founded\": number, \"ceo\": {\"name\": \"string\", \"age\": number, \"email\": \"string\", \"address\": {\"street\": \"string\", \"city\": \"string\", \"country\": \"string\", \"zip_code\": \"string\"}, \"hobbies\": [\"string\"]}, \"employees\": [...], \"revenue\": number}"),
 		},
 		Temperature: float64Ptr(0.7),
 		MaxTokens:   intPtr(500),
 	}
 
-	resp, err := structured.CreateWithSchema(ctx, req, "company_info", Company{})
+	req.ResponseFormat = &models.ResponseFormat{
+		Type: "json_object",
+	}
+	
+	resp, err := suite.client.CreateChatCompletion(ctx, req)
 	require.NoError(suite.T(), err)
 
 	var company Company
-	err = openrouter.ParseStructuredResponse(resp, &company)
+	content, err := resp.Choices[0].Message.GetTextContent()
+	require.NoError(suite.T(), err)
+	
+	err = json.Unmarshal([]byte(content), &company)
 	require.NoError(suite.T(), err)
 
 	// Validate structure

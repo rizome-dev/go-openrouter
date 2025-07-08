@@ -11,14 +11,14 @@ type Generation struct {
 	Model             string                 `json:"model"`
 	Object            string                 `json:"object"`
 	Created           int64                  `json:"created"`
-	Usage             GenerationUsage        `json:"usage"`
+	Usage             interface{}            `json:"usage"`
 	NativeTokenCounts NativeTokenCounts      `json:"native_token_counts"`
 	Metrics           GenerationMetrics      `json:"metrics"`
 	Provider          string                 `json:"provider"`
 	Error             *GenerationError       `json:"error,omitempty"`
 	Moderation        *ModerationInfo        `json:"moderation,omitempty"`
 	Transforms        []string               `json:"transforms,omitempty"`
-	Origin            map[string]interface{} `json:"origin,omitempty"`
+	Origin            interface{} `json:"origin,omitempty"`
 }
 
 // GenerationUsage represents token usage with costs

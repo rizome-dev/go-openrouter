@@ -169,14 +169,24 @@ func (o *ObservableClient) trackGenerationCost(ctx context.Context, generationID
 		return
 	}
 
-	if o.metrics != nil && genResp.Data.Usage.TotalCost > 0 {
-		o.metrics.RecordCost(genResp.Data.Usage.TotalCost, labels)
+	// Handle usage field which may be interface{} due to API inconsistencies
+	var totalCost float64
+	if usage, ok := genResp.Data.Usage.(map[string]interface{}); ok {
+		if cost, exists := usage["total_cost"]; exists {
+			if costFloat, ok := cost.(float64); ok {
+				totalCost = costFloat
+			}
+		}
+	}
+
+	if o.metrics != nil && totalCost > 0 {
+		o.metrics.RecordCost(totalCost, labels)
 	}
 
 	if o.logger != nil {
 		o.logger.Debug("Generation cost tracked",
 			"generation_id", generationID,
-			"cost", genResp.Data.Usage.TotalCost,
+			"cost", totalCost,
 			"prompt_tokens", genResp.Data.NativeTokenCounts.PromptTokens,
 			"completion_tokens", genResp.Data.NativeTokenCounts.CompletionTokens,
 		)

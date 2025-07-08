@@ -53,6 +53,9 @@ type ChatCompletionRequest struct {
 
 	// Web search options (for native web search models)
 	WebSearchOptions *WebSearchOptions `json:"web_search_options,omitempty"`
+
+	// Reasoning configuration
+	Reasoning *ReasoningConfig `json:"reasoning,omitempty"`
 }
 
 // ResponseFormat represents the desired response format
@@ -77,6 +80,17 @@ type Prediction struct {
 // WebSearchOptions represents options for native web search
 type WebSearchOptions struct {
 	SearchContextSize string `json:"search_context_size,omitempty"` // "low", "medium", "high"
+}
+
+// ReasoningConfig represents configuration for reasoning tokens
+type ReasoningConfig struct {
+	// Either effort or max_tokens can be set (not both)
+	Effort    string `json:"effort,omitempty"`     // "low", "medium", "high"
+	MaxTokens *int   `json:"max_tokens,omitempty"` // Direct token allocation
+	
+	// Optional settings
+	Exclude *bool `json:"exclude,omitempty"` // Exclude reasoning from response
+	Enabled *bool `json:"enabled,omitempty"` // Enable reasoning with defaults
 }
 
 // ChatCompletionResponse represents a response from the chat completions endpoint

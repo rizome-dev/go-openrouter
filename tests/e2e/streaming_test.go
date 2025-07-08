@@ -15,11 +15,11 @@ func (suite *E2ETestSuite) TestBasicStreaming() {
 	ctx := context.Background()
 
 	req := models.ChatCompletionRequest{
-		Model: "meta-llama/llama-3.2-1b-instruct:free",
+		Model: "mistralai/mistral-small-3.2-24b-instruct:free",
 		Messages: []models.Message{
 			models.NewTextMessage(models.RoleUser, "Count from 1 to 5"),
 		},
-		MaxTokens:   intPtr(50),
+		MaxTokens:   intPtr(200),
 		Temperature: float64Ptr(0.0),
 		Stream:      true,
 	}
@@ -63,7 +63,7 @@ func (suite *E2ETestSuite) TestStreamingWithCancel() {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	req := models.ChatCompletionRequest{
-		Model: "meta-llama/llama-3.2-1b-instruct:free",
+		Model: "mistralai/mistral-small-3.2-24b-instruct:free",
 		Messages: []models.Message{
 			models.NewTextMessage(models.RoleUser, "Write a very long story about space exploration"),
 		},
@@ -115,7 +115,7 @@ func (suite *E2ETestSuite) TestStreamingToolCalls() {
 	require.NoError(suite.T(), err)
 
 	req := models.ChatCompletionRequest{
-		Model: "openai/gpt-4o-mini",
+		Model: "google/gemini-2.5-flash",
 		Messages: []models.Message{
 			models.NewTextMessage(models.RoleUser, "What time is it?"),
 		},
@@ -163,7 +163,7 @@ func (suite *E2ETestSuite) TestStreamingTimeout() {
 	defer cancel()
 
 	req := models.ChatCompletionRequest{
-		Model: "meta-llama/llama-3.2-1b-instruct:free",
+		Model: "mistralai/mistral-small-3.2-24b-instruct:free",
 		Messages: []models.Message{
 			models.NewTextMessage(models.RoleUser, "Write an extremely detailed essay about the history of computing"),
 		},

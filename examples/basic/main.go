@@ -26,13 +26,13 @@ func main() {
 	// Create a simple chat completion
 	fmt.Println("Sending chat completion request...")
 	resp, err := client.CreateChatCompletion(context.Background(), models.ChatCompletionRequest{
-		Model: "openai/gpt-3.5-turbo",
+		Model: "google/gemini-2.5-pro", // You can also try "anthropic/claude-3.5-sonnet"
 		Messages: []models.Message{
 			models.NewTextMessage(models.RoleSystem, "You are a helpful assistant."),
 			models.NewTextMessage(models.RoleUser, "What is the capital of France?"),
 		},
 		Temperature: float64Ptr(0.7),
-		MaxTokens:   intPtr(100),
+		MaxTokens:   intPtr(150), // Be careful with low limits on models that include reasoning
 	})
 
 	if err != nil {
@@ -41,7 +41,23 @@ func main() {
 
 	// Print response
 	fmt.Printf("\nModel used: %s\n", resp.Model)
-	fmt.Printf("Response: %s\n", getMessageContent(resp.Choices[0].Message))
+	if len(resp.Choices) > 0 && resp.Choices[0].Message != nil {
+		msg := resp.Choices[0].Message
+		content := getMessageContent(msg)
+		fmt.Printf("Response: %s\n", content)
+		
+		// Check if reasoning is present (some models like Gemini include this)
+		// Note: When using low max_tokens with models that include reasoning,
+		// the actual content might be truncated in favor of the reasoning field
+		if msg.Reasoning != "" {
+			fmt.Printf("\nReasoning: %s\n", msg.Reasoning)
+		}
+		
+		// Print finish reason
+		if resp.Choices[0].FinishReason != "" {
+			fmt.Printf("\nFinish reason: %s\n", resp.Choices[0].FinishReason)
+		}
+	}
 
 	// Print usage if available
 	if resp.Usage != nil {

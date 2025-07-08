@@ -1,17 +1,18 @@
 package models
 
+import "time"
+
 // APIKey represents an API key
 type APIKey struct {
-	ID          string   `json:"id"`
-	Name        string   `json:"name"`
-	Key         string   `json:"key"`
-	CreatedAt   int64    `json:"created_at"`
-	LastUsed    int64    `json:"last_used,omitempty"`
-	UsageCount  int      `json:"usage_count,omitempty"`
-	Disabled    bool     `json:"disabled"`
-	Permissions []string `json:"permissions"`
-	RateLimit   int      `json:"rate_limit,omitempty"`
-	ExpiresAt   int64    `json:"expires_at,omitempty"`
+	CreatedAt time.Time  `json:"created_at"`
+	UpdatedAt time.Time  `json:"updated_at"`
+	Hash      string     `json:"hash"`
+	Label     string     `json:"label,omitempty"`
+	Name      string     `json:"name"`
+	Disabled  bool       `json:"disabled"`
+	Limit     float64    `json:"limit,omitempty"`
+	Usage     float64    `json:"usage"`
+	Key       string     `json:"key,omitempty"` // Only returned when creating a new key
 }
 
 // APIKeysResponse represents the response from listing API keys
@@ -21,58 +22,73 @@ type APIKeysResponse struct {
 
 // CreateAPIKeyRequest represents a request to create an API key
 type CreateAPIKeyRequest struct {
-	Name        string   `json:"name"`
-	Permissions []string `json:"permissions"`
-	RateLimit   int      `json:"rate_limit,omitempty"`
-	ExpiresIn   int      `json:"expires_in,omitempty"` // Seconds until expiration
+	Name                string  `json:"name"`
+	Label               string  `json:"label,omitempty"`
+	Limit               float64 `json:"limit,omitempty"`
+	IncludeBYOKInLimit  bool    `json:"include_byok_in_limit,omitempty"`
 }
 
 // UpdateAPIKeyRequest represents a request to update an API key
 type UpdateAPIKeyRequest struct {
-	Name        *string   `json:"name,omitempty"`
-	Disabled    *bool     `json:"disabled,omitempty"`
-	RateLimit   *int      `json:"rate_limit,omitempty"`
-	Permissions *[]string `json:"permissions,omitempty"`
+	Name     *string  `json:"name,omitempty"`
+	Disabled *bool    `json:"disabled,omitempty"`
+	Limit    *float64 `json:"limit,omitempty"`
 }
 
 // ExchangeAuthCodeRequest represents a request to exchange an auth code for an API key
 type ExchangeAuthCodeRequest struct {
-	Code         string `json:"code"`
-	CodeVerifier string `json:"code_verifier"`
-	RedirectURI  string `json:"redirect_uri"`
+	Code                string `json:"code"`
+	CodeVerifier        string `json:"code_verifier,omitempty"`
+	CodeChallengeMethod string `json:"code_challenge_method,omitempty"`
 }
 
 // ExchangeAuthCodeResponse represents the response from exchanging an auth code
 type ExchangeAuthCodeResponse struct {
-	APIKey    APIKey `json:"api_key"`
-	ExpiresIn int    `json:"expires_in"` // Seconds until expiration
+	Key    string `json:"key"`
+	UserID string `json:"user_id"`
 }
 
 // CreditsResponse represents the user's credit information
 type CreditsResponse struct {
-	TotalCredits     float64 `json:"total_credits"`
-	UsedCredits      float64 `json:"used_credits"`
-	RemainingCredits float64 `json:"remaining_credits"`
-	ResetDate        int64   `json:"reset_date"`
-	CreditLimit      float64 `json:"credit_limit"`
+	Data struct {
+		TotalCredits float64 `json:"total_credits"`
+		TotalUsage   float64 `json:"total_usage"`
+	} `json:"data"`
 }
 
 // CreateCoinbaseChargeRequest represents a request to create a Coinbase charge
 type CreateCoinbaseChargeRequest struct {
-	Amount      float64 `json:"amount"`
-	Currency    string  `json:"currency"`
-	Description string  `json:"description"`
+	Amount  float64 `json:"amount"`  // USD amount
+	Sender  string  `json:"sender"`  // Ethereum address
+	ChainID int     `json:"chain_id"`
 }
 
 // CoinbaseChargeResponse represents a Coinbase charge response
 type CoinbaseChargeResponse struct {
-	ID          string  `json:"id"`
-	Code        string  `json:"code"`
-	Name        string  `json:"name"`
-	Description string  `json:"description"`
-	Amount      float64 `json:"amount"`
-	Currency    string  `json:"currency"`
-	Status      string  `json:"status"`
-	CheckoutURL string  `json:"checkout_url"`
-	ExpiresAt   int64   `json:"expires_at"`
+	Data struct {
+		ID        string    `json:"id"`
+		CreatedAt time.Time `json:"created_at"`
+		ExpiresAt time.Time `json:"expires_at"`
+		Web3Data  struct {
+			TransferIntent struct {
+				Metadata struct {
+					ChainID         int    `json:"chain_id"`
+					ContractAddress string `json:"contract_address"`
+					Sender          string `json:"sender"`
+				} `json:"metadata"`
+				CallData struct {
+					RecipientAmount   string `json:"recipient_amount"`
+					Deadline          string `json:"deadline"`
+					Recipient         string `json:"recipient"`
+					RecipientCurrency string `json:"recipient_currency"`
+					RefundDestination string `json:"refund_destination"`
+					FeeAmount         string `json:"fee_amount"`
+					ID                string `json:"id"`
+					Operator          string `json:"operator"`
+					Signature         string `json:"signature"`
+					Prefix            string `json:"prefix"`
+				} `json:"call_data"`
+			} `json:"transfer_intent"`
+		} `json:"web3_data"`
+	} `json:"data"`
 }

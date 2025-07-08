@@ -3,10 +3,8 @@ package openrouter
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
-	"net/url"
 	"testing"
 	"time"
 
@@ -20,7 +18,7 @@ import (
 func TestListAPIKeys(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "GET", r.Method)
-		assert.Equal(t, "/api-keys", r.URL.Path)
+		assert.Equal(t, "/api/v1/keys", r.URL.Path)
 		
 		// Check query parameters
 		offset := r.URL.Query().Get("offset")
@@ -81,7 +79,7 @@ func TestListAPIKeys(t *testing.T) {
 func TestCreateAPIKey(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "POST", r.Method)
-		assert.Equal(t, "/api-keys", r.URL.Path)
+		assert.Equal(t, "/api/v1/keys", r.URL.Path)
 
 		var req models.CreateAPIKeyRequest
 		err := json.NewDecoder(r.Body).Decode(&req)
@@ -123,7 +121,7 @@ func TestCreateAPIKey(t *testing.T) {
 func TestGetAPIKey(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "GET", r.Method)
-		assert.Equal(t, "/api-keys/key-123", r.URL.Path)
+		assert.Equal(t, "/api/v1/keys/key-123", r.URL.Path)
 
 		resp := models.APIKey{
 			ID:          "key-123",
@@ -150,7 +148,7 @@ func TestGetAPIKey(t *testing.T) {
 func TestGetCurrentAPIKey(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "GET", r.Method)
-		assert.Equal(t, "/api-keys/current", r.URL.Path)
+		assert.Equal(t, "/api/v1/me/keys", r.URL.Path)
 		
 		// Verify the API key is sent in the header
 		assert.Equal(t, "Bearer test-api-key", r.Header.Get("Authorization"))
@@ -177,7 +175,7 @@ func TestGetCurrentAPIKey(t *testing.T) {
 func TestUpdateAPIKey(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "PATCH", r.Method)
-		assert.Equal(t, "/api-keys/key-123", r.URL.Path)
+		assert.Equal(t, "/api/v1/keys/key-123", r.URL.Path)
 
 		var req models.UpdateAPIKeyRequest
 		err := json.NewDecoder(r.Body).Decode(&req)
@@ -221,7 +219,7 @@ func TestUpdateAPIKey(t *testing.T) {
 func TestDeleteAPIKey(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "DELETE", r.Method)
-		assert.Equal(t, "/api-keys/key-123", r.URL.Path)
+		assert.Equal(t, "/api/v1/keys/key-123", r.URL.Path)
 
 		w.WriteHeader(http.StatusNoContent)
 	}))
@@ -238,7 +236,7 @@ func TestDeleteAPIKey(t *testing.T) {
 func TestGetCredits(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "GET", r.Method)
-		assert.Equal(t, "/credits", r.URL.Path)
+		assert.Equal(t, "/api/v1/me/credits", r.URL.Path)
 
 		resp := models.CreditsResponse{
 			TotalCredits:     1000.50,
@@ -265,7 +263,7 @@ func TestGetCredits(t *testing.T) {
 func TestListProviders(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "GET", r.Method)
-		assert.Equal(t, "/providers", r.URL.Path)
+		assert.Equal(t, "/api/v1/providers", r.URL.Path)
 
 		resp := models.ProvidersResponse{
 			Data: []models.Provider{
@@ -309,7 +307,7 @@ func TestListProviders(t *testing.T) {
 func TestListModelEndpoints(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "GET", r.Method)
-		assert.Equal(t, "/models/openai/gpt-4/endpoints", r.URL.Path)
+		assert.Equal(t, "/api/v1/endpoints/openai/gpt-4", r.URL.Path)
 
 		resp := models.ModelEndpointsResponse{
 			Data: []models.ModelEndpoint{
@@ -353,7 +351,7 @@ func TestListModelEndpoints(t *testing.T) {
 func TestExchangeAuthCodeForAPIKey(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "POST", r.Method)
-		assert.Equal(t, "/auth/exchange", r.URL.Path)
+		assert.Equal(t, "/api/v1/auth/keys", r.URL.Path)
 
 		var req models.ExchangeAuthCodeRequest
 		err := json.NewDecoder(r.Body).Decode(&req)
@@ -395,7 +393,7 @@ func TestExchangeAuthCodeForAPIKey(t *testing.T) {
 func TestCreateCoinbaseCharge(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "POST", r.Method)
-		assert.Equal(t, "/charges/coinbase", r.URL.Path)
+		assert.Equal(t, "/api/v1/me/coinbase-charge", r.URL.Path)
 
 		var req models.CreateCoinbaseChargeRequest
 		err := json.NewDecoder(r.Body).Decode(&req)
@@ -434,173 +432,3 @@ func TestCreateCoinbaseCharge(t *testing.T) {
 	assert.NotEmpty(t, charge.CheckoutURL)
 }
 
-// Additional Client methods implementation placeholders
-// These would be implemented in the actual client.go file
-
-func (c *Client) ListAPIKeys(ctx context.Context, opts *ListAPIKeysOptions) (*models.APIKeysResponse, error) {
-	endpoint := "/api-keys"
-	if opts != nil {
-		params := url.Values{}
-		if opts.Offset > 0 {
-			params.Set("offset", fmt.Sprintf("%d", opts.Offset))
-		}
-		if opts.IncludeDisabled {
-			params.Set("include_disabled", "true")
-		}
-		if len(params) > 0 {
-			endpoint += "?" + params.Encode()
-		}
-	}
-	
-	resp, err := c.doRequest(ctx, "GET", endpoint, nil)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	var result models.APIKeysResponse
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, err
-	}
-	return &result, nil
-}
-
-func (c *Client) CreateAPIKey(ctx context.Context, req models.CreateAPIKeyRequest) (*models.APIKey, error) {
-	resp, err := c.doRequest(ctx, "POST", "/api-keys", req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	var result models.APIKey
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, err
-	}
-	return &result, nil
-}
-
-func (c *Client) GetAPIKey(ctx context.Context, keyID string) (*models.APIKey, error) {
-	resp, err := c.doRequest(ctx, "GET", fmt.Sprintf("/api-keys/%s", keyID), nil)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	var result models.APIKey
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, err
-	}
-	return &result, nil
-}
-
-func (c *Client) GetCurrentAPIKey(ctx context.Context) (*models.APIKey, error) {
-	resp, err := c.doRequest(ctx, "GET", "/api-keys/current", nil)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	var result models.APIKey
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, err
-	}
-	return &result, nil
-}
-
-func (c *Client) UpdateAPIKey(ctx context.Context, keyID string, req models.UpdateAPIKeyRequest) (*models.APIKey, error) {
-	resp, err := c.doRequest(ctx, "PATCH", fmt.Sprintf("/api-keys/%s", keyID), req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	var result models.APIKey
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, err
-	}
-	return &result, nil
-}
-
-func (c *Client) DeleteAPIKey(ctx context.Context, keyID string) error {
-	resp, err := c.doRequest(ctx, "DELETE", fmt.Sprintf("/api-keys/%s", keyID), nil)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-	return nil
-}
-
-func (c *Client) GetCredits(ctx context.Context) (*models.CreditsResponse, error) {
-	resp, err := c.doRequest(ctx, "GET", "/credits", nil)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	var result models.CreditsResponse
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, err
-	}
-	return &result, nil
-}
-
-func (c *Client) ListProviders(ctx context.Context) (*models.ProvidersResponse, error) {
-	resp, err := c.doRequest(ctx, "GET", "/providers", nil)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	var result models.ProvidersResponse
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, err
-	}
-	return &result, nil
-}
-
-func (c *Client) ListModelEndpoints(ctx context.Context, model string) (*models.ModelEndpointsResponse, error) {
-	resp, err := c.doRequest(ctx, "GET", fmt.Sprintf("/models/%s/endpoints", model), nil)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	var result models.ModelEndpointsResponse
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, err
-	}
-	return &result, nil
-}
-
-func (c *Client) ExchangeAuthCodeForAPIKey(ctx context.Context, req models.ExchangeAuthCodeRequest) (*models.ExchangeAuthCodeResponse, error) {
-	resp, err := c.doRequest(ctx, "POST", "/auth/exchange", req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	var result models.ExchangeAuthCodeResponse
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, err
-	}
-	return &result, nil
-}
-
-func (c *Client) CreateCoinbaseCharge(ctx context.Context, req models.CreateCoinbaseChargeRequest) (*models.CoinbaseChargeResponse, error) {
-	resp, err := c.doRequest(ctx, "POST", "/charges/coinbase", req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	var result models.CoinbaseChargeResponse
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, err
-	}
-	return &result, nil
-}
-
-type ListAPIKeysOptions struct {
-	Offset          int
-	IncludeDisabled bool
-}
