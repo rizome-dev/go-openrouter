@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/rizome-dev/go-openrouter/pkg/openrouter"
+	"github.com/rizome-dev/go-openrouter/pkg"
 )
 
 func main() {
@@ -17,9 +17,9 @@ func main() {
 	}
 
 	// Create client
-	client := openrouter.NewClient(apiKey,
-		openrouter.WithHTTPReferer("https://github.com/rizome-dev/go-openrouter"),
-		openrouter.WithXTitle("OpenRouterGo Multi-Modal Example"),
+	client := pkg.NewClient(apiKey,
+		pkg.WithHTTPReferer("https://github.com/rizome-dev/go-openrouter"),
+		pkg.WithXTitle("OpenRouterGo Multi-Modal Example"),
 	)
 
 	// Example 1: Image analysis
@@ -39,15 +39,15 @@ func main() {
 	researchAgentExample(client)
 }
 
-func imageAnalysisExample(client *openrouter.Client) {
-	helper := openrouter.NewMultiModalHelper(client)
+func imageAnalysisExample(client *pkg.Client) {
+	helper := pkg.NewMultiModalHelper(client)
 	ctx := context.Background()
 
 	// Example with image URL
 	fmt.Println("\n--- Analyzing image from URL ---")
 
 	imageURL := "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg"
-	image := openrouter.ImageInput{
+	image := pkg.ImageInput{
 		URL:    imageURL,
 		Detail: "high",
 	}
@@ -69,7 +69,7 @@ func imageAnalysisExample(client *openrouter.Client) {
 	// Example with multiple images
 	fmt.Println("\n--- Comparing multiple images ---")
 
-	images := []openrouter.ImageInput{
+	images := []pkg.ImageInput{
 		{URL: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/320px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg"},
 		{URL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Polarlicht_2.jpg/320px-Polarlicht_2.jpg"},
 	}
@@ -89,13 +89,13 @@ func imageAnalysisExample(client *openrouter.Client) {
 	fmt.Printf("Comparison: %s\n", content)
 }
 
-func pdfProcessingExample(client *openrouter.Client) {
+func pdfProcessingExample(client *pkg.Client) {
 
 	// Note: This example requires an actual PDF file
 	// For demonstration, we'll show the structure
 	fmt.Println("\n--- PDF Processing Structure ---")
 	fmt.Println("To process a PDF file:")
-	fmt.Println("1. Load PDF from file: pdf := openrouter.LoadPDFFromFile('document.pdf', models.PDFEngineText)")
+	fmt.Println("1. Load PDF from file: pdf := pkg.LoadPDFFromFile('document.pdf', models.PDFEngineText)")
 	fmt.Println("2. Process with helper: resp := helper.CreateWithPDF(ctx, 'Summarize this document', pdf, 'google/gemini-2.0-flash-001')")
 
 	// Example of processing with annotations for cost savings
@@ -105,8 +105,8 @@ func pdfProcessingExample(client *openrouter.Client) {
 	fmt.Println("Then reuse in subsequent requests to avoid reprocessing costs")
 }
 
-func webSearchExample(client *openrouter.Client) {
-	helper := openrouter.NewWebSearchHelper(client)
+func webSearchExample(client *pkg.Client) {
+	helper := pkg.NewWebSearchHelper(client)
 	ctx := context.Background()
 
 	// Simple web search
@@ -127,7 +127,7 @@ func webSearchExample(client *openrouter.Client) {
 	fmt.Printf("Response: %s\n", content)
 
 	// Extract and display citations
-	citations := openrouter.ExtractCitations(resp)
+	citations := pkg.ExtractCitations(resp)
 	if len(citations) > 0 {
 		fmt.Println("\nSources:")
 		for _, citation := range citations {
@@ -141,7 +141,7 @@ func webSearchExample(client *openrouter.Client) {
 	resp, err = helper.CreateWithWebSearch(ctx,
 		"Recent AI breakthroughs",
 		"openai/gpt-4",
-		&openrouter.SearchOptions{
+		&pkg.SearchOptions{
 			MaxResults:   10,
 			SearchPrompt: "Latest AI research papers and breakthroughs from 2024:",
 		},
@@ -173,8 +173,8 @@ func webSearchExample(client *openrouter.Client) {
 	fmt.Printf("Response: %s\n", content[:min(500, len(content))]+"...")
 }
 
-func researchAgentExample(client *openrouter.Client) {
-	helper := openrouter.NewWebSearchHelper(client)
+func researchAgentExample(client *pkg.Client) {
+	helper := pkg.NewWebSearchHelper(client)
 	agent := helper.CreateResearchAgent("openai/gpt-4")
 	ctx := context.Background()
 

@@ -10,7 +10,7 @@ import (
 
 	"github.com/rizome-dev/go-openrouter/pkg/errors"
 	"github.com/rizome-dev/go-openrouter/pkg/models"
-	"github.com/rizome-dev/go-openrouter/pkg/openrouter"
+	"github.com/rizome-dev/go-openrouter/pkg"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -19,7 +19,7 @@ func (suite *E2ETestSuite) TestConcurrentRequests() {
 	ctx := context.Background()
 
 	// Create concurrent client with limit
-	concurrent := openrouter.NewConcurrentClient(suite.apiKey, 3)
+	concurrent := pkg.NewConcurrentClient(suite.apiKey, 3)
 
 	// Create multiple requests
 	requests := []models.ChatCompletionRequest{}
@@ -66,7 +66,7 @@ func (suite *E2ETestSuite) TestConcurrentRequests() {
 func (suite *E2ETestSuite) TestConcurrentStreaming() {
 	ctx := context.Background()
 
-	concurrent := openrouter.NewConcurrentClient(suite.apiKey, 2)
+	concurrent := pkg.NewConcurrentClient(suite.apiKey, 2)
 
 	// Create streaming requests
 	requests := []models.ChatCompletionRequest{
@@ -128,8 +128,8 @@ func (suite *E2ETestSuite) TestRetryClient() {
 	ctx := context.Background()
 
 	// Create retry client with aggressive settings for testing
-	retryClient := openrouter.NewRetryClient(suite.apiKey,
-		&openrouter.RetryConfig{
+	retryClient := pkg.NewRetryClient(suite.apiKey,
+		&pkg.RetryConfig{
 			MaxRetries:    3,
 			InitialDelay:  100 * time.Millisecond,
 			MaxDelay:      1 * time.Second,
@@ -168,13 +168,13 @@ func (suite *E2ETestSuite) TestRetryClient() {
 func (suite *E2ETestSuite) TestWebSearch() {
 	ctx := context.Background()
 
-	webHelper := openrouter.NewWebSearchHelper(suite.client)
+	webHelper := pkg.NewWebSearchHelper(suite.client)
 
 	// Test basic web search
 	resp, err := webHelper.CreateWithWebSearch(ctx,
 		"What is the current version of Go programming language?",
 		"google/gemini-2.5-flash",
-		&openrouter.SearchOptions{
+		&pkg.SearchOptions{
 			MaxResults: 5,
 		},
 	)
@@ -189,7 +189,7 @@ func (suite *E2ETestSuite) TestWebSearch() {
 
 	// Check for citations if available
 	if resp.Choices[0].Message.Annotations != nil {
-		citations := openrouter.ExtractCitations(resp)
+		citations := pkg.ExtractCitations(resp)
 		if len(citations) > 0 {
 			suite.T().Logf("Found %d citations", len(citations))
 			for _, c := range citations {
@@ -203,8 +203,8 @@ func (suite *E2ETestSuite) TestBatchProcessor() {
 	ctx := context.Background()
 
 	// Create batch processor
-	concurrent := openrouter.NewConcurrentClient(suite.apiKey, 2)
-	processor := openrouter.NewBatchProcessor(concurrent, 2)
+	concurrent := pkg.NewConcurrentClient(suite.apiKey, 2)
+	processor := pkg.NewBatchProcessor(concurrent, 2)
 
 	// Create batch of requests
 	requests := []models.ChatCompletionRequest{}
@@ -219,10 +219,10 @@ func (suite *E2ETestSuite) TestBatchProcessor() {
 		})
 	}
 
-	results := []openrouter.ChatCompletionResult{}
+	results := []pkg.ChatCompletionResult{}
 	var mu sync.Mutex
 
-	err := processor.ProcessBatch(ctx, requests, func(result openrouter.ChatCompletionResult) {
+	err := processor.ProcessBatch(ctx, requests, func(result pkg.ChatCompletionResult) {
 		mu.Lock()
 		results = append(results, result)
 		mu.Unlock()
@@ -320,7 +320,7 @@ func (suite *E2ETestSuite) TestCircuitBreaker() {
 	ctx := context.Background()
 
 	// Create circuit breaker with low threshold for testing
-	breaker := openrouter.NewCircuitBreaker(suite.client, 2, 5*time.Second)
+	breaker := pkg.NewCircuitBreaker(suite.client, 2, 5*time.Second)
 
 	// Make valid requests
 	for i := 0; i < 2; i++ {

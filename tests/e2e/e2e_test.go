@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/rizome-dev/go-openrouter/pkg/models"
-	"github.com/rizome-dev/go-openrouter/pkg/openrouter"
+	"github.com/rizome-dev/go-openrouter/pkg"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
@@ -16,7 +16,7 @@ import (
 
 type E2ETestSuite struct {
 	suite.Suite
-	client *openrouter.Client
+	client *pkg.Client
 	apiKey string
 }
 
@@ -26,10 +26,10 @@ func (suite *E2ETestSuite) SetupSuite() {
 		suite.T().Skip("OPENROUTER_API_KEY not set, skipping e2e tests")
 	}
 
-	suite.client = openrouter.NewClient(suite.apiKey,
-		openrouter.WithTimeout(30*time.Second),
-		openrouter.WithHTTPReferer("https://github.com/rizome-dev/openroutergo"),
-		openrouter.WithXTitle("OpenRouterGo E2E Tests"),
+	suite.client = pkg.NewClient(suite.apiKey,
+		pkg.WithTimeout(30*time.Second),
+		pkg.WithHTTPReferer("https://github.com/rizome-dev/openroutergo"),
+		pkg.WithXTitle("OpenRouterGo E2E Tests"),
 	)
 }
 

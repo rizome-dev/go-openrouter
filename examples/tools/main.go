@@ -10,7 +10,7 @@ import (
 	"strings"
 
 	"github.com/rizome-dev/go-openrouter/pkg/models"
-	"github.com/rizome-dev/go-openrouter/pkg/openrouter"
+	"github.com/rizome-dev/go-openrouter/pkg"
 )
 
 func main() {
@@ -21,9 +21,9 @@ func main() {
 	}
 
 	// Create client
-	client := openrouter.NewClient(apiKey,
-		openrouter.WithHTTPReferer("https://github.com/rizome-dev/go-openrouter"),
-		openrouter.WithXTitle("OpenRouterGo Tools Example"),
+	client := pkg.NewClient(apiKey,
+		pkg.WithHTTPReferer("https://github.com/rizome-dev/go-openrouter"),
+		pkg.WithXTitle("OpenRouterGo Tools Example"),
 	)
 
 	// Example 1: Simple tool calling
@@ -39,7 +39,7 @@ func main() {
 	structuredOutputExample(client)
 }
 
-func simpleToolExample(client *openrouter.Client) {
+func simpleToolExample(client *pkg.Client) {
 	ctx := context.Background()
 
 	// Define a calculator tool
@@ -117,9 +117,9 @@ func simpleToolExample(client *openrouter.Client) {
 	}
 }
 
-func agentExample(client *openrouter.Client) {
+func agentExample(client *pkg.Client) {
 	// Create agent
-	agent := openrouter.NewAgent(client, "openai/gpt-3.5-turbo")
+	agent := pkg.NewAgent(client, "openai/gpt-3.5-turbo")
 
 	// Define tools
 	weatherTool, _ := models.NewTool("get_weather",
@@ -198,7 +198,7 @@ func agentExample(client *openrouter.Client) {
 		models.NewTextMessage(models.RoleUser, "What's the weather like in Tokyo and what are the top tourist attractions there?"),
 	}
 
-	finalMessages, err := agent.Run(context.Background(), messages, openrouter.RunOptions{
+	finalMessages, err := agent.Run(context.Background(), messages, pkg.RunOptions{
 		Tools:         []models.Tool{*weatherTool, *searchTool},
 		ToolChoice:    models.ToolChoiceAuto,
 		MaxIterations: 5,
@@ -228,8 +228,8 @@ func agentExample(client *openrouter.Client) {
 	}
 }
 
-func structuredOutputExample(client *openrouter.Client) {
-	structured := openrouter.NewStructuredOutput(client)
+func structuredOutputExample(client *pkg.Client) {
+	structured := pkg.NewStructuredOutput(client)
 	ctx := context.Background()
 
 	// Example 1: Using predefined struct
@@ -243,7 +243,7 @@ func structuredOutputExample(client *openrouter.Client) {
 			},
 		},
 		"weather_info",
-		openrouter.WeatherInfo{},
+		pkg.WeatherInfo{},
 	)
 
 	if err != nil {
@@ -251,8 +251,8 @@ func structuredOutputExample(client *openrouter.Client) {
 		return
 	}
 
-	var weatherInfo openrouter.WeatherInfo
-	if err := openrouter.ParseStructuredResponse(weatherResp, &weatherInfo); err != nil {
+	var weatherInfo pkg.WeatherInfo
+	if err := pkg.ParseStructuredResponse(weatherResp, &weatherInfo); err != nil {
 		log.Printf("Error parsing response: %v", err)
 		return
 	}

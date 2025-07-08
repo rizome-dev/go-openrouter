@@ -1,4 +1,4 @@
-package openrouter
+package pkg
 
 import (
 	"context"
@@ -9,12 +9,13 @@ import (
 	"github.com/rizome-dev/go-openrouter/pkg/streaming"
 )
 
-// CreateChatCompletion creates a chat completion
-func (c *Client) CreateChatCompletion(ctx context.Context, req models.ChatCompletionRequest) (*models.ChatCompletionResponse, error) {
+// CreateCompletion creates a text completion using the legacy completions endpoint
+func (c *Client) CreateCompletion(ctx context.Context, req models.ChatCompletionRequest) (*models.ChatCompletionResponse, error) {
 	// Ensure streaming is disabled for non-streaming endpoint
 	req.Stream = false
 
-	resp, err := c.doRequest(ctx, "POST", "/chat/completions", req)
+	// For legacy completions endpoint, use the prompt field instead of messages
+	resp, err := c.doRequest(ctx, "POST", "/completions", req)
 	if err != nil {
 		return nil, err
 	}
@@ -28,12 +29,12 @@ func (c *Client) CreateChatCompletion(ctx context.Context, req models.ChatComple
 	return &completionResp, nil
 }
 
-// CreateChatCompletionStream creates a streaming chat completion
-func (c *Client) CreateChatCompletionStream(ctx context.Context, req models.ChatCompletionRequest) (*streaming.ChatCompletionStreamReader, error) {
+// CreateCompletionStream creates a streaming text completion
+func (c *Client) CreateCompletionStream(ctx context.Context, req models.ChatCompletionRequest) (*streaming.ChatCompletionStreamReader, error) {
 	// Ensure streaming is enabled
 	req.Stream = true
 
-	resp, err := c.doRequest(ctx, "POST", "/chat/completions", req)
+	resp, err := c.doRequest(ctx, "POST", "/completions", req)
 	if err != nil {
 		return nil, err
 	}

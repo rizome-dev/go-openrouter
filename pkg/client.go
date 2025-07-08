@@ -1,4 +1,4 @@
-package openrouter
+package pkg
 
 import (
 	"bytes"

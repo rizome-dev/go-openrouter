@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/rizome-dev/go-openrouter/pkg/models"
-	"github.com/rizome-dev/go-openrouter/pkg/openrouter"
+	"github.com/rizome-dev/go-openrouter/pkg"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -83,10 +83,10 @@ func (suite *E2ETestSuite) SkipTestImageBase64() {
 func (suite *E2ETestSuite) TestMultipleImages() {
 	ctx := context.Background()
 
-	helper := openrouter.NewMultiModalHelper(suite.client)
+	helper := pkg.NewMultiModalHelper(suite.client)
 
 	// Two different images
-	images := []openrouter.ImageInput{
+	images := []pkg.ImageInput{
 		{URL: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/200px-Cat03.jpg"},
 		{URL: "https://upload.wikimedia.org/wikipedia/commons/thumb/archive/5/5a/20120703164907%21Black_Labrador_Retriever_portrait.jpg/200px-Black_Labrador_Retriever_portrait.jpg"},
 	}

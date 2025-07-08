@@ -10,7 +10,7 @@ import (
 
 	"github.com/rizome-dev/go-openrouter/pkg/errors"
 	"github.com/rizome-dev/go-openrouter/pkg/models"
-	"github.com/rizome-dev/go-openrouter/pkg/openrouter"
+	"github.com/rizome-dev/go-openrouter/pkg"
 )
 
 func main() {
@@ -39,20 +39,20 @@ func main() {
 
 func observableExample(apiKey string) {
 	// Create logger and metrics collector
-	logger := openrouter.NewSimpleLogger(openrouter.LogLevelInfo)
-	metrics := openrouter.NewSimpleMetricsCollector()
+	logger := pkg.NewSimpleLogger(pkg.LogLevelInfo)
+	metrics := pkg.NewSimpleMetricsCollector()
 
 	// Create observable client
-	client := openrouter.NewObservableClient(apiKey,
-		openrouter.ObservabilityOptions{
+	client := pkg.NewObservableClient(apiKey,
+		pkg.ObservabilityOptions{
 			Logger:       logger,
 			Metrics:      metrics,
 			LogRequests:  true,
 			LogResponses: true,
 			TrackCosts:   true,
 		},
-		openrouter.WithHTTPReferer("https://github.com/rizome-dev/go-openrouter"),
-		openrouter.WithXTitle("Comprehensive Example"),
+		pkg.WithHTTPReferer("https://github.com/rizome-dev/go-openrouter"),
+		pkg.WithXTitle("Comprehensive Example"),
 	)
 
 	// Add hooks
@@ -101,7 +101,7 @@ func observableExample(apiKey string) {
 
 func retryExample(apiKey string) {
 	// Create retry client with custom config
-	retryConfig := &openrouter.RetryConfig{
+	retryConfig := &pkg.RetryConfig{
 		MaxRetries:    5,
 		InitialDelay:  500 * time.Millisecond,
 		MaxDelay:      10 * time.Second,
@@ -115,8 +115,8 @@ func retryExample(apiKey string) {
 		},
 	}
 
-	client := openrouter.NewRetryClient(apiKey, retryConfig,
-		openrouter.WithTimeout(5*time.Second),
+	client := pkg.NewRetryClient(apiKey, retryConfig,
+		pkg.WithTimeout(5*time.Second),
 	)
 
 	// Simulate a request that might fail
@@ -138,7 +138,7 @@ func retryExample(apiKey string) {
 }
 
 func advancedRoutingExample(apiKey string) {
-	client := openrouter.NewClient(apiKey)
+	client := pkg.NewClient(apiKey)
 	ctx := context.Background()
 
 	// Example 1: Specific provider order with fallbacks
@@ -202,12 +202,12 @@ func advancedRoutingExample(apiKey string) {
 
 func completeWorkflowExample(apiKey string) {
 	// Create a comprehensive client setup
-	logger := openrouter.NewSimpleLogger(openrouter.LogLevelInfo)
-	metrics := openrouter.NewSimpleMetricsCollector()
+	logger := pkg.NewSimpleLogger(pkg.LogLevelInfo)
+	metrics := pkg.NewSimpleMetricsCollector()
 
 	// Base client with observability
-	baseClient := openrouter.NewObservableClient(apiKey,
-		openrouter.ObservabilityOptions{
+	baseClient := pkg.NewObservableClient(apiKey,
+		pkg.ObservabilityOptions{
 			Logger:       logger,
 			Metrics:      metrics,
 			LogRequests:  true,
@@ -217,7 +217,7 @@ func completeWorkflowExample(apiKey string) {
 	)
 
 	// Wrap with retry logic
-	retryClient := &openrouter.RetryClient{
+	retryClient := &pkg.RetryClient{
 		Client: baseClient.Client,
 	}
 
@@ -225,12 +225,12 @@ func completeWorkflowExample(apiKey string) {
 
 	// Step 1: Research with web search
 	fmt.Println("\n--- Step 1: Research ---")
-	webHelper := openrouter.NewWebSearchHelper(retryClient.Client)
+	webHelper := pkg.NewWebSearchHelper(retryClient.Client)
 
 	researchResp, err := webHelper.CreateWithWebSearch(ctx,
 		"Latest advances in quantum computing 2024",
 		"openai/gpt-4",
-		&openrouter.SearchOptions{
+		&pkg.SearchOptions{
 			MaxResults: 5,
 		},
 	)
@@ -244,12 +244,12 @@ func completeWorkflowExample(apiKey string) {
 	fmt.Printf("Research findings: %s\n", researchContent[:min(300, len(researchContent))]+"...")
 
 	// Extract citations
-	citations := openrouter.ExtractCitations(researchResp)
+	citations := pkg.ExtractCitations(researchResp)
 	fmt.Printf("\nFound %d citations\n", len(citations))
 
 	// Step 2: Create structured summary
 	fmt.Println("\n--- Step 2: Structured Summary ---")
-	structured := openrouter.NewStructuredOutput(retryClient.Client)
+	structured := pkg.NewStructuredOutput(retryClient.Client)
 
 	type ResearchSummary struct {
 		Topic         string   `json:"topic" description:"Main research topic"`
@@ -280,7 +280,7 @@ func completeWorkflowExample(apiKey string) {
 	}
 
 	var summary ResearchSummary
-	if err := openrouter.ParseStructuredResponse(summaryResp, &summary); err != nil {
+	if err := pkg.ParseStructuredResponse(summaryResp, &summary); err != nil {
 		log.Printf("Failed to parse summary: %v", err)
 		return
 	}

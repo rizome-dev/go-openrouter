@@ -22,15 +22,15 @@ import (
     "fmt"
     "log"
     
-    "github.com/rizome-dev/go-openrouter/pkg/openrouter"
+    "github.com/rizome-dev/go-openrouter/pkg"
     "github.com/rizome-dev/go-openrouter/pkg/models"
 )
 
 func main() {
     // Create a client
-    client := openrouter.NewClient("your-api-key",
-        openrouter.WithHTTPReferer("https://your-app.com"),
-        openrouter.WithXTitle("Your App Name"),
+    client := pkg.NewClient("your-api-key",
+        pkg.WithHTTPReferer("https://your-app.com"),
+        pkg.WithXTitle("Your App Name"),
     )
 
     resp, err := client.CreateChatCompletion(context.Background(), models.ChatCompletionRequest{
@@ -383,7 +383,7 @@ go test ./...
 go test -v ./...
 
 # Run specific test package
-go test ./pkg/openrouter/...
+go test ./pkg/...
 
 # Run E2E tests (requires OPENROUTER_API_KEY)
 cd tests
@@ -395,7 +395,7 @@ chmod +x run_e2e.sh
 
 The project includes comprehensive test coverage:
 
-**Unit Tests** (`pkg/openrouter/`):
+**Unit Tests** (`pkg/`):
 - `client_test.go` - Core client functionality
 - `structured_test.go` - Structured output handling
 - `tools_test.go` - Tool calling functionality

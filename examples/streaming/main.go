@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/rizome-dev/go-openrouter/pkg/models"
-	"github.com/rizome-dev/go-openrouter/pkg/openrouter"
+	"github.com/rizome-dev/go-openrouter/pkg"
 )
 
 func main() {
@@ -20,9 +20,9 @@ func main() {
 	}
 
 	// Create client
-	client := openrouter.NewClient(apiKey,
-		openrouter.WithHTTPReferer("https://github.com/rizome-dev/go-openrouter"),
-		openrouter.WithXTitle("OpenRouterGo Streaming Example"),
+	client := pkg.NewClient(apiKey,
+		pkg.WithHTTPReferer("https://github.com/rizome-dev/go-openrouter"),
+		pkg.WithXTitle("OpenRouterGo Streaming Example"),
 	)
 
 	// Example 1: Basic streaming
@@ -38,7 +38,7 @@ func main() {
 	concurrentStreaming(client)
 }
 
-func basicStreaming(client *openrouter.Client) {
+func basicStreaming(client *pkg.Client) {
 	ctx := context.Background()
 
 	// Create streaming request
@@ -76,7 +76,7 @@ func basicStreaming(client *openrouter.Client) {
 	fmt.Println()
 }
 
-func streamingWithCancellation(client *openrouter.Client) {
+func streamingWithCancellation(client *pkg.Client) {
 	// Create context with timeout
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -120,13 +120,13 @@ func streamingWithCancellation(client *openrouter.Client) {
 	fmt.Println()
 }
 
-func concurrentStreaming(client *openrouter.Client) {
+func concurrentStreaming(client *pkg.Client) {
 	// Create concurrent client
-	concurrentClient := openrouter.NewConcurrentClient(
+	concurrentClient := pkg.NewConcurrentClient(
 		os.Getenv("OPENROUTER_API_KEY"),
 		3, // Max 3 concurrent requests
-		openrouter.WithHTTPReferer("https://github.com/rizome-dev/go-openrouter"),
-		openrouter.WithXTitle("OpenRouterGo Concurrent Example"),
+		pkg.WithHTTPReferer("https://github.com/rizome-dev/go-openrouter"),
+		pkg.WithXTitle("OpenRouterGo Concurrent Example"),
 	)
 
 	// Create multiple requests

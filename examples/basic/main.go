@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/rizome-dev/go-openrouter/pkg/models"
-	"github.com/rizome-dev/go-openrouter/pkg/openrouter"
+	"github.com/rizome-dev/go-openrouter/pkg"
 )
 
 func main() {
@@ -18,9 +18,9 @@ func main() {
 	}
 
 	// Create client
-	client := openrouter.NewClient(apiKey,
-		openrouter.WithHTTPReferer("https://github.com/rizome-dev/go-openrouter"),
-		openrouter.WithXTitle("OpenRouterGo Example"),
+	client := pkg.NewClient(apiKey,
+		pkg.WithHTTPReferer("https://github.com/rizome-dev/go-openrouter"),
+		pkg.WithXTitle("OpenRouterGo Example"),
 	)
 
 	// Create a simple chat completion

@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 
 	"github.com/rizome-dev/go-openrouter/pkg/models"
-	"github.com/rizome-dev/go-openrouter/pkg/openrouter"
+	"github.com/rizome-dev/go-openrouter/pkg"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -217,7 +217,7 @@ func (suite *E2ETestSuite) TestToolAgent() {
 	ctx := context.Background()
 
 	// Create agent
-	agent := openrouter.NewAgent(suite.client, "openai/gpt-4o-mini")
+	agent := pkg.NewAgent(suite.client, "openai/gpt-4o-mini")
 
 	// Define weather tool
 	weatherTool, _ := models.NewTool("get_weather",
@@ -257,7 +257,7 @@ func (suite *E2ETestSuite) TestToolAgent() {
 		models.NewTextMessage(models.RoleUser, "What's the weather in Paris?"),
 	}
 
-	finalMessages, err := agent.Run(ctx, messages, openrouter.RunOptions{
+	finalMessages, err := agent.Run(ctx, messages, pkg.RunOptions{
 		Tools:         []models.Tool{*weatherTool},
 		MaxIterations: 3,
 	})

@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 
 	"github.com/rizome-dev/go-openrouter/pkg/models"
-	"github.com/rizome-dev/go-openrouter/pkg/openrouter"
+	"github.com/rizome-dev/go-openrouter/pkg"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -80,7 +80,7 @@ func (suite *E2ETestSuite) TestStructuredOutputWithGoStruct() {
 
 	// Parse using the struct
 	var weather WeatherReport
-	err = openrouter.ParseStructuredResponse(resp, &weather)
+	err = pkg.ParseStructuredResponse(resp, &weather)
 	require.NoError(suite.T(), err)
 
 	// Validate
